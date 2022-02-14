@@ -1,4 +1,5 @@
-<div class="sidebar" data-color="orange" data-background-color="white" data-image="{{ asset('material') }}/img/sidebar-1.jpg">
+<div class="sidebar" data-color="orange" data-background-color="white"
+  data-image="{{ asset('material') }}/img/sidebar-1.jpg">
   <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -14,9 +15,17 @@
       <li class="nav-item{{ $activePage == 'dashboard' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('home') }}">
           <i class="material-icons">dashboard</i>
-            <p>{{ __('Dashboard') }}</p>
+          <p>{{ __('Dashboard') }}</p>
         </a>
       </li>
+
+      <li class="nav-item{{ $activePage == 'posts' ? ' active' : '' }}">
+        <a class="nav-link" href="{{ route('posts.index') }}">
+          <i class="material-icons">blur_linear</i>
+          <p>{{ __('Posts') }}</p>
+        </a>
+      </li>
+
       <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">
         <a class="nav-link" data-toggle="collapse" href="#laravelExample" aria-expanded="true">
           <i><img style="width:25px" src="{{ asset('material') }}/img/laravel.svg"></i>
@@ -44,13 +53,13 @@
       <li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('table') }}">
           <i class="material-icons">content_paste</i>
-            <p>{{ __('Table List') }}</p>
+          <p>{{ __('Table List') }}</p>
         </a>
       </li>
       <li class="nav-item{{ $activePage == 'typography' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('typography') }}">
           <i class="material-icons">library_books</i>
-            <p>{{ __('Typography') }}</p>
+          <p>{{ __('Typography') }}</p>
         </a>
       </li>
       <li class="nav-item{{ $activePage == 'icons' ? ' active' : '' }}">
@@ -62,7 +71,7 @@
       <li class="nav-item{{ $activePage == 'map' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('map') }}">
           <i class="material-icons">location_ons</i>
-            <p>{{ __('Maps') }}</p>
+          <p>{{ __('Maps') }}</p>
         </a>
       </li>
       <li class="nav-item{{ $activePage == 'notifications' ? ' active' : '' }}">
