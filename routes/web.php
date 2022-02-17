@@ -65,4 +65,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	Route::resource('posts', 'App\Http\Controllers\PostController', ['except' => ['show']]);
+	Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]);
+	Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]);
+	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
+	Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]);
 });

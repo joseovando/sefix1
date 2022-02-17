@@ -4,22 +4,22 @@
       <ul>
         <li>
           <a href="https://www.creative-tim.com">
-              {{ __('Creative Tim') }}
+            {{ __('SEFIS') }}
           </a>
         </li>
         <li>
           <a href="https://creative-tim.com/presentation">
-              {{ __('About Us') }}
+            {{ __('About Us') }}
           </a>
         </li>
         <li>
           <a href="http://blog.creative-tim.com">
-              {{ __('Blog') }}
+            {{ __('Blog') }}
           </a>
         </li>
         <li>
           <a href="https://www.creative-tim.com/license">
-              {{ __('Licenses') }}
+            {{ __('Licenses') }}
           </a>
         </li>
       </ul>
@@ -28,8 +28,8 @@
       &copy;
       <script>
         document.write(new Date().getFullYear())
-      </script>, made with <i class="material-icons">favorite</i> by
-      <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> and <a href="https://www.updivision.com" target="_blank">UPDIVISION</a> for a better web.
+      </script> <i class="material-icons">favorite</i> by
+      <a href="https://www.creative-tim.com" target="_blank"> Semilla Financiera de Salomón</a>
     </div>
   </div>
 </footer>
