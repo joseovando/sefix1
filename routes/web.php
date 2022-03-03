@@ -69,4 +69,9 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]);
 	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
 	Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]);
+
+	Route::get('charts', ['as' => 'charts.ejemplo', 'uses' => 'App\Http\Controllers\ChartController@ejemplo']);
+	Route::get('charts/pie', ['as' => 'charts.ejemplo_pie', 'uses' => 'App\Http\Controllers\ChartController@ejemplo_pie']);
+	Route::get('charts/group_bar', ['as' => 'charts.ejemplo_group_bar', 'uses' => 'App\Http\Controllers\ChartController@ejemplo_group_bar']);
+	Route::get('charts/gasto_categoria', ['as' => 'charts.gasto_categoria', 'uses' => 'App\Http\Controllers\ChartController@gasto_categoria']);
 });

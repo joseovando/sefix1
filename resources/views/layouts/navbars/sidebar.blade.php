@@ -79,6 +79,35 @@
         </a>
       </li>
 
+      {{-- Graficas --}}
+      <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
+        <a class="nav-link" href="{{ route('charts.ejemplo') }}">
+          <i class="material-icons">apps</i>
+          <p>{{ __('Gasto Vivienda') }}</p>
+        </a>
+      </li>
+
+      <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
+        <a class="nav-link" href="{{ route('charts.ejemplo_pie') }}">
+          <i class="material-icons">apps</i>
+          <p>{{ __('Seguimiento Gastos') }}</p>
+        </a>
+      </li>
+
+      <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
+        <a class="nav-link" href="{{ route('charts.ejemplo_group_bar') }}">
+          <i class="material-icons">apps</i>
+          <p>{{ __('Pasajes Programado Ejecutado') }}</p>
+        </a>
+      </li>
+
+      <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
+        <a class="nav-link" href="{{ route('charts.gasto_categoria') }}">
+          <i class="material-icons">apps</i>
+          <p>{{ __('Gasto por Categoria') }}</p>
+        </a>
+      </li>
+
       {{-- Laravel --}}
       <li class="nav-item{{ $activePage == 'posts' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('posts.index') }}">
