@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PresupuestoEjecutadoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -68,7 +69,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]);
 	Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]);
 	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
-	Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]);
+
+	/* Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]); */
+	Route::get('presupuestosejecutados/{id}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
+	Route::post('presupuestosejecutados/store', [PresupuestoEjecutadoController::class, 'store'])->name('presupuestosejecutados.store');
 
 	Route::get('charts', ['as' => 'charts.ejemplo', 'uses' => 'App\Http\Controllers\ChartController@ejemplo']);
 	Route::get('charts/pie', ['as' => 'charts.ejemplo_pie', 'uses' => 'App\Http\Controllers\ChartController@ejemplo_pie']);
