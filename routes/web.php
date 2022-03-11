@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\PresupuestoEjecutadoController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,7 +67,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	Route::resource('posts', 'App\Http\Controllers\PostController', ['except' => ['show']]);
-	Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]);
+	/* Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]); */
+	Route::get('categorias/{id}/index', [CategoriaController::class, 'index'])->name('categorias.index');
+	Route::get('categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
+
 	Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]);
 	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
 

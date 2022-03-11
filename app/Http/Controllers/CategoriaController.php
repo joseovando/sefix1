@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
+use App\Models\Categoria;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
@@ -11,9 +13,32 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        return view('categorias.index');
+        switch ($id) {
+            case 1:
+                $tipo = 2;
+                break;
+            case 2:
+                $tipo = 2;
+                break;
+            case 3:
+                $tipo = 1;
+                break;
+            case 4:
+                $tipo = 1;
+                break;
+        }
+
+        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
+            ->where('tipo', '=', $tipo)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        return view('categorias.index', [
+            'vistaCategoriaPadres' => $vistaCategoriaPadres,
+            'menu' => $id
+        ]);
     }
 
     /**
