@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\PresupuestoEjecutadoController;
+use App\Http\Controllers\PresupuestoProgramadoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,16 +68,39 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	Route::resource('posts', 'App\Http\Controllers\PostController', ['except' => ['show']]);
+
 	/* Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]); */
 	Route::get('categorias/{id}/index', [CategoriaController::class, 'index'])->name('categorias.index');
 	Route::get('categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
+	Route::get('categorias/create_categoria', [CategoriaController::class, 'create_categoria'])->name('categorias.create_categoria');
+	Route::get('categorias/tablero', [CategoriaController::class, 'tablero'])->name('categorias.tablero');
+	Route::get('categorias/tablero_categoria', [CategoriaController::class, 'tablero_categoria'])->name('categorias.tablero_categoria');
+	Route::post('categorias/store', [CategoriaController::class, 'store'])->name('categorias.store');
+	Route::post('categorias/store_categoria', [CategoriaController::class, 'store_categoria'])->name('categorias.store_categoria');
+	Route::get('categorias/{id}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
+	Route::get('categorias/{id}/edit_categoria', [CategoriaController::class, 'edit_categoria'])->name('categorias.edit_categoria');
+	Route::put('categorias/update', [CategoriaController::class, 'update'])->name('categorias.update');
+	Route::put('categorias/update_categoria', [CategoriaController::class, 'update_categoria'])->name('categorias.update_categoria');
+	Route::get('categorias/{id}/delete', [CategoriaController::class, 'delete'])->name('categorias.delete');
+	Route::get('categorias/{id}/delete_categoria', [CategoriaController::class, 'delete_categoria'])->name('categorias.delete_categoria');
 
-	Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]);
-	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
+	/* Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]); */
+	Route::get('presupuestosprogramados/index', [PresupuestoProgramadoController::class, 'index'])->name('presupuestosprogramados.index');
+	Route::get('presupuestosprogramados/{id}/{menu}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
+	Route::post('presupuestosprogramados/store', [PresupuestoProgramadoController::class, 'store'])->name('presupuestosprogramados.store');
+	Route::get('presupuestosprogramados/{id}/{menu}/edit', [PresupuestoProgramadoController::class, 'edit'])->name('presupuestosprogramados.edit');
+	Route::put('presupuestosprogramados/update', [PresupuestoProgramadoController::class, 'update'])->name('presupuestosprogramados.update');
+	Route::get('presupuestosprogramados/{id}/{menu}/delete', [PresupuestoProgramadoController::class, 'delete'])->name('presupuestosprogramados.delete');
 
 	/* Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]); */
+	Route::get('presupuestosejecutados/index', [PresupuestoEjecutadoController::class, 'index'])->name('presupuestosejecutados.index');
 	Route::get('presupuestosejecutados/{id}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
 	Route::post('presupuestosejecutados/store', [PresupuestoEjecutadoController::class, 'store'])->name('presupuestosejecutados.store');
+	Route::get('presupuestosejecutados/{id}/{menu}/edit', [PresupuestoEjecutadoController::class, 'edit'])->name('presupuestosejecutados.edit');
+	Route::put('presupuestosejecutados/update', [PresupuestoEjecutadoController::class, 'update'])->name('presupuestosejecutados.update');
+	Route::get('presupuestosejecutados/{id}/{menu}/delete', [PresupuestoEjecutadoController::class, 'delete'])->name('presupuestosejecutados.delete');
+
+	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
 
 	Route::get('charts', ['as' => 'charts.ejemplo', 'uses' => 'App\Http\Controllers\ChartController@ejemplo']);
 	Route::get('charts/pie', ['as' => 'charts.ejemplo_pie', 'uses' => 'App\Http\Controllers\ChartController@ejemplo_pie']);

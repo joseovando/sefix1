@@ -22,27 +22,23 @@
                                 @switch($menu)
                                     @case(1)
                                         <a
-                                            href="{{ route('presupuestosprogramados.create', $vistaCategoriaPadre->id) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosprogramados.create', ['id' => $vistaCategoriaPadre->id, 'menu' => $menu]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(2)
                                         <a
-                                            href="{{ route('presupuestosprogramados.create', $vistaCategoriaPadre->id) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosejecutados.create', ['id' => $vistaCategoriaPadre->id]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(3)
                                         <a
-                                            href="{{ route('presupuestosejecutados.create', $vistaCategoriaPadre->id) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosprogramados.create', ['id' => $vistaCategoriaPadre->id, 'menu' => $menu]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(4)
                                         <a
-                                            href="{{ route('presupuestosejecutados.create', $vistaCategoriaPadre->id) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosejecutados.create', ['id' => $vistaCategoriaPadre->id]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
-
-                                    @default
-                                        <a
-                                            href="{{ route('presupuestosejecutados.create', $vistaCategoriaPadre->id) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                 @endswitch
 
                             </h5>

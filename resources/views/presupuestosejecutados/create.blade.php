@@ -1,4 +1,4 @@
-@extends('layouts.app', ['activePage' => 'presupuestosejecutados', 'titlePage' => __('Presuspuesto Ejecutado')])
+@extends('layouts.app', ['activePage' => 'presupuestosejecutados', 'titlePage' => __($titulo)])
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
@@ -19,7 +19,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">{{ __('Presupuesto Ejecutado') }}</h4>
+                            <h4 class="card-title">{{ __($titulo) }}</h4>
                             <p class="card-category">{{ __('') }}</p>
                         </div>
                         <div class="card-body">

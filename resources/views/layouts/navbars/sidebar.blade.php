@@ -30,6 +30,12 @@
                 <div class="collapse" id="ingresos">
                     <ul class="nav">
                         <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
+                            <a class="nav-link" href="{{ route('presupuestosprogramados.index') }}">
+                                <i class="material-icons">developer_board</i>
+                                <span class="sidebar-normal">{{ __('Tablero') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
                             <a class="nav-link" href="{{ route('categorias.index', 1) }}">
                                 <i class="material-icons">developer_board</i>
                                 <span class="sidebar-normal">{{ __('Programado') }} </span>
@@ -55,9 +61,14 @@
                 </a>
                 <div class="collapse" id="egreso">
                     <ul class="nav">
-                        <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
+                        <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
+                            <a class="nav-link" href="{{ route('presupuestosejecutados.index') }}">
+                                <i class="material-icons">developer_board</i>
+                                <span class="sidebar-normal">{{ __('Tablero') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
                             <a class="nav-link" href="{{ route('categorias.index', 3) }}">
-
                                 <i class="material-icons">developer_board</i>
                                 <span class="sidebar-normal">{{ __('Programado') }} </span>
                             </a>
@@ -73,12 +84,32 @@
             </li>
 
             {{-- Categorias --}}
-            <li class="nav-item{{ $activePage == 'categorias' ? ' active' : '' }}">
-                <a class="nav-link" href="{{ route('categorias.index', 1) }}">
-                    <i class="material-icons">apps</i>
-                    <p>{{ __('Categorias') }}</p>
+            <li
+                class="nav-item {{ $activePage == 'categorias' || $activePage == 'user-management' ? ' active' : '' }}">
+                <a class="nav-link" data-toggle="collapse" href="#categorias" aria-expanded="true">
+                    <i class="material-icons">category</i>
+                    <p>{{ __('Categorias') }}
+                        <b class="caret"></b>
+                    </p>
                 </a>
+                <div class="collapse" id="categorias">
+                    <ul class="nav">
+                        <li class="nav-item{{ $activePage == 'categoria' ? ' active' : '' }}">
+                            <a class="nav-link" href="{{ route('categorias.tablero_categoria') }}">
+                                <i class="material-icons">mode_comment</i>
+                                <span class="sidebar-normal">{{ __('Categorias') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'subcategoria' ? ' active' : '' }}">
+                            <a class="nav-link" href="{{ route('categorias.tablero') }}">
+                                <i class="material-icons">question_answer</i>
+                                <span class="sidebar-normal">{{ __('Subcategorias') }} </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
+
 
             {{-- Graficas --}}
             <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
