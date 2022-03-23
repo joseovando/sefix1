@@ -130,36 +130,32 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($vistaIngresoProgramados as $vistaIngresoProgramado)
+                                            @foreach ($vistaIngresoProgramadoPadres as $vistaIngresoProgramadoPadre)
                                                 <tr>
                                                     <td>
                                                         <a class="navbar-brand"
-                                                            href="{{ route('presupuestosprogramados.edit', ['id' => $vistaIngresoProgramado->id, 'menu' => 1]) }}">
+                                                            href="{{ route('presupuestosprogramados.edit', ['id' => $vistaIngresoProgramadoPadre->id_padre, 'menu' => 1]) }}">
                                                             <i class="fa fa-pencil" aria-hidden="true"></i></a>
                                                     </td>
                                                     <td>
                                                         <a class="navbar-brand"
-                                                            href="{{ route('presupuestosprogramados.delete', ['id' => $vistaIngresoProgramado->id, 'menu' => 1]) }}">
+                                                            href="{{ route('presupuestosprogramados.delete', ['id' => $vistaIngresoProgramadoPadre->id_padre, 'menu' => 1]) }}">
                                                             <i class="fa fa-trash" aria-hidden="true"></i></a>
                                                     </td>
-                                                    <td>{{ $vistaIngresoProgramado->categoria_padre }}</td>
-                                                    <td>{{ date('Y-m', strtotime($vistaIngresoProgramado->fecha_inicio)) }}
+                                                    <td>{{ $vistaIngresoProgramadoPadre->categoria_padre }}</td>
+                                                    <td>{{ date('Y-m', strtotime($vistaIngresoProgramadoPadre->fecha_promedio)) }}
                                                     </td>
-                                                    <td>{{ $vistaIngresoProgramado->frecuencia }}</td>
-                                                    <td>{{ $vistaIngresoProgramado->sin_caducidad }}</td>
+                                                    <td>{{ $vistaIngresoProgramadoPadre->frecuencia }}</td>
+                                                    <td>
+                                                        @if ($vistaIngresoProgramadoPadre->sin_caducidad === 1)
+                                                            Sin Caducidad
+                                                        @else
+                                                            Con Caducidad
+                                                        @endif
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <th></th>
-                                                <th></th>
-                                                <th>Fecha</th>
-                                                <th>Categoria</th>
-                                                <th>Programado</th>
-                                                <th>Ejecutado</th>
-                                            </tr>
-                                        </tfoot>
                                     </table>
 
                                 </div>

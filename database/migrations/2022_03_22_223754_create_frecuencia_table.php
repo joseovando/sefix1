@@ -16,6 +16,7 @@ class CreateFrecuenciaTable extends Migration
         Schema::create('frecuencia', function (Blueprint $table) {
             $table->integer('id', true);
             $table->string('frecuencia')->nullable();
+            $table->integer('valor_numerico')->nullable();
             $table->integer('orden')->nullable();
             $table->integer('estado')->nullable();
             $table->integer('id_user')->nullable();

@@ -1,5 +1,62 @@
 <?php
 
+function date_frecuencia($fecha_inicial, $fecha_final, $frecuencia)
+{
+    $fecha_actual = date("Y-m-d");
+    $fecha_frecuencia = $fecha_inicial;
+    $contador = 1;
+
+    if ($fecha_inicial < $fecha_final) {
+
+        while ($fecha_frecuencia < $fecha_actual) {
+            $frecuencia_neo = $frecuencia * $contador;
+            $frecuencia_texto = "+" . $frecuencia_neo . " day";
+            $date_future = strtotime($frecuencia_texto, strtotime($fecha_inicial));
+            $fecha_frecuencia = date('Y-m-d', $date_future);
+            $contador++;
+        }
+
+        if ($fecha_frecuencia > $fecha_final) {
+            $contador = 1;
+
+            while ($fecha_final < $fecha_frecuencia) {
+                $frecuencia = $frecuencia * $contador;
+                $frecuencia_texto = "-" . $frecuencia . " day";
+                $date_future = strtotime($frecuencia_texto, strtotime($fecha_frecuencia));
+                $fecha_frecuencia = date('Y-m-d', $date_future);
+                $contador++;
+            }
+        }
+    }
+
+    return $fecha_frecuencia;
+}
+
+function date_frecuencia_caducidad($fecha_inicial, $frecuencia)
+{
+    $fecha_actual = date("Y-m-d");
+    $fecha_frecuencia = $fecha_inicial;
+    $contador = 1;
+
+    while ($fecha_frecuencia < $fecha_actual) {
+        $frecuencia_neo = $frecuencia * $contador;
+        $frecuencia_texto = "+" . $frecuencia_neo . " day";
+        $date_future = strtotime($frecuencia_texto, strtotime($fecha_inicial));
+        $fecha_frecuencia = date('Y-m-d', $date_future);
+        $contador++;
+    }
+
+    return $fecha_frecuencia;
+}
+
+function mes_actual()
+{
+    $fecha_actual = date("Y-m");
+    $mes[0] = $fecha_actual . "-01";
+    $mes[1] = $fecha_actual . "-28";
+    return $mes;
+}
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
@@ -23,25 +80,23 @@ class PresupuestoProgramadoController extends Controller
     {
         $vistaIngresoProgramados = DB::table('vista_ingreso_programado')
             ->where('estado_ingreso_programado', '=', 1)
-            ->orderBy('fecha_inicio', 'DESC')
+            ->orderBy('fecha_promedio', 'DESC')
             ->get();
 
         $fecha_actual = date("Y-m-d");
 
         foreach ($vistaIngresoProgramados as $vistaIngresoProgramado) {
 
-            // Unico
-            if ($vistaIngresoProgramado->id_frecuencia == 1) {
-                $ingreso = IngresoProgramado::find($vistaIngresoProgramado->id);
-                $ingreso->fecha_promedio = $vistaIngresoProgramado->fecha_inicio;
-                $ingreso->update();
-            }
+            //Unico y Por defecto
+            $ingreso = IngresoProgramado::find($vistaIngresoProgramado->id);
+            $ingreso->fecha_promedio = $vistaIngresoProgramado->fecha_inicio;
+            $ingreso->update();
 
             // Mensual con fecha de Inicio y Fin 
             if (
                 $vistaIngresoProgramado->id_frecuencia == 2
-                and $vistaIngresoProgramado->fecha_inicio >= $fecha_actual
-                and $vistaIngresoProgramado->fecha_fin <= $fecha_actual
+                and $vistaIngresoProgramado->fecha_inicio <= $fecha_actual
+                and $vistaIngresoProgramado->fecha_fin >= $fecha_actual
             ) {
                 $ingreso = IngresoProgramado::find($vistaIngresoProgramado->id);
                 $ingreso->fecha_promedio = $fecha_actual;
@@ -57,11 +112,51 @@ class PresupuestoProgramadoController extends Controller
                 $ingreso->fecha_promedio = $fecha_actual;
                 $ingreso->update();
             }
+
+            // Trimestral, Semestral, Anual con fecha de Inicio y Fin 
+            if (
+                $vistaIngresoProgramado->id_frecuencia == 3 // Trimestral
+                or $vistaIngresoProgramado->id_frecuencia == 4 // Semestral
+                or $vistaIngresoProgramado->id_frecuencia == 5 // Anual
+                and $vistaIngresoProgramado->fecha_inicio <= $fecha_actual
+                and $vistaIngresoProgramado->fecha_fin >= $fecha_actual
+            ) {
+                $fecha_promedio = date_frecuencia(
+                    $vistaIngresoProgramado->fecha_inicio,
+                    $vistaIngresoProgramado->fecha_fin,
+                    $vistaIngresoProgramado->valor_numerico
+                );
+
+                $ingreso = IngresoProgramado::find($vistaIngresoProgramado->id);
+                $ingreso->fecha_promedio = $fecha_promedio;
+                $ingreso->update();
+            }
+
+            // Trimestral, Semestral, Anual Sin Caducidad 
+            if (
+                $vistaIngresoProgramado->id_frecuencia == 3 // Trimestral
+                or $vistaIngresoProgramado->id_frecuencia == 4 // Semestral
+                or $vistaIngresoProgramado->id_frecuencia == 5 // Anual
+                and $vistaIngresoProgramado->sin_caducidad == 1
+            ) {
+                $fecha_promedio = date_frecuencia_caducidad(
+                    $vistaIngresoProgramado->fecha_inicio,
+                    $vistaIngresoProgramado->valor_numerico
+                );
+                $ingreso = IngresoProgramado::find($vistaIngresoProgramado->id);
+                $ingreso->fecha_promedio = $fecha_promedio;
+                $ingreso->update();
+            }
         }
 
-        return view('presupuestosprogramados.index', [
-            'vistaIngresoProgramados' => $vistaIngresoProgramados
-        ]);
+
+        $vistaIngresoProgramadoPadres = DB::table('vista_ingreso_programado')
+            ->orderBy('orden_padre', 'ASC')
+            ->whereBetween('fecha_promedio', mes_actual())
+            ->groupBy('id_padre')
+            ->get();
+
+        return view('presupuestosprogramados.index', compact('vistaIngresoProgramadoPadres'));
     }
 
     /**
@@ -258,7 +353,7 @@ class PresupuestoProgramadoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id, $menu)
+    public function edit2($id, $menu)
     {
         $vistaCategoriaPadres = DB::table('vista_categoria_padres')
             ->where('tipo', '=', 2)
@@ -295,6 +390,51 @@ class PresupuestoProgramadoController extends Controller
         ]);
     }
 
+    public function edit($id, $menu)
+    {
+        $titulo = "Egreso Programado";
+
+        $vistaCategoriaPadre = DB::table('vista_categoria_padres')
+            ->where('id', '=', $id)
+            ->orderBy('orden', 'ASC')
+            ->first();
+
+        $vistaCategorias = DB::table('vista_categorias')
+            ->where('id_padre', '=', $id)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $frecuencias = Frecuencia::all();
+
+        $vistaIngresoProgramados = DB::table('vista_ingreso_programado')
+            ->where('id_padre', '=', $id)
+            ->orderBy('orden_categoria', 'ASC')
+            ->get();
+
+        foreach ($vistaIngresoProgramados as $vistaIngresoProgramado) {
+            $id_ingreso_programado[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id;
+            $monto[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->monto_programado;
+            $id_frecuencia[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id_frecuencia;
+            $caducidad[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->sin_caducidad + 0;
+            $fecha_inicio[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_inicio;
+            $fecha_fin[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_fin;
+        }
+
+        return view('presupuestosprogramados.edit', compact(
+            'titulo',
+            'id',
+            'vistaCategoriaPadre',
+            'vistaCategorias',
+            'frecuencias',
+            'id_ingreso_programado',
+            'monto',
+            'id_frecuencia',
+            'caducidad',
+            'fecha_inicio',
+            'fecha_fin'
+        ));
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -303,7 +443,7 @@ class PresupuestoProgramadoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function update(Request $request)
+    public function update2(Request $request)
     {
         $ingreso = Ingreso::find(request('id'));
         $ingreso->id_categoria = request('subcategoria');
@@ -324,6 +464,37 @@ class PresupuestoProgramadoController extends Controller
         return redirect()->route('presupuestosprogramados.index');
     }
 
+    public function update(Request $request)
+    {
+        $vistaCategorias = DB::table('vista_categorias')
+            ->where('id_padre', '=', request('id_categoria'))
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        foreach ($vistaCategorias as $vistaCategoria) {
+
+            $input_id = "id_" . $vistaCategoria->id;
+            $input_monto = "monto_" . $vistaCategoria->id;
+            $input_frecuencia = "frecuencia_" . $vistaCategoria->id;
+            $input_frecuencia = "frecuencia_" . $vistaCategoria->id;
+            $input_sin_caducidad = "sin_caducidad_" . $vistaCategoria->id;
+            $input_inicio = "inicio_" . $vistaCategoria->id;
+            $input_fin = "fin_" . $vistaCategoria->id;
+            $monto = request($input_monto) + 0;
+
+            if ($monto > 0) {
+                $ingresoProgramado = IngresoProgramado::find(request($input_id));
+                $ingresoProgramado->monto_programado = $monto;
+                $ingresoProgramado->id_frecuencia = request($input_frecuencia);
+                $ingresoProgramado->sin_caducidad = request($input_sin_caducidad);
+                $ingresoProgramado->fecha_inicio = request($input_inicio);
+                $ingresoProgramado->fecha_fin = request($input_fin);
+                $ingresoProgramado->update();
+            }
+        }
+
+        return redirect()->route('presupuestosprogramados.index');
+    }
     /**
      * Remove the specified resource from storage.
      *

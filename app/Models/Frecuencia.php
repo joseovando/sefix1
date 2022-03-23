@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $id
  * @property string $frecuencia
+ * @property int $valor_numerico
  * @property int $orden
  * @property int $estado
  * @property int $id_user
@@ -25,5 +26,5 @@ class Frecuencia extends Model
     /**
      * @var array
      */
-    protected $fillable = ['frecuencia', 'orden', 'estado', 'id_user', 'created_at', 'updated_at'];
+    protected $fillable = ['frecuencia', 'valor_numerico', 'orden', 'estado', 'id_user', 'created_at', 'updated_at'];
 }
