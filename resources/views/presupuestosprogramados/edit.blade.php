@@ -50,8 +50,10 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($vistaCategorias as $vistaCategoria)
-                                                    <tr>
+                                                @foreach ($vistaCategorias as $vistaCategoria)                                            
+                                                @if (isset($monto[$vistaCategoria->id]))
+                                                     
+                                                <tr>
                                                         <th scope="row">{{ $vistaCategoria->categoria }}</th>
                                                         <td>
                                                             <div class="col-sm">
@@ -184,6 +186,8 @@
                                                             </div>
                                                         </td>
                                                     </tr>
+
+                                                    @endif 
                                                 @endforeach
                                             </tbody>
                                         </table>

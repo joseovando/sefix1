@@ -4,6 +4,9 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\PresupuestoEjecutadoController;
 use App\Http\Controllers\PresupuestoProgramadoController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -62,12 +65,21 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+	/* Route::resource('users', 'App\Http\Controllers\UserController', ['except' => ['show']]); */
+
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
 
 	Route::resource('posts', 'App\Http\Controllers\PostController', ['except' => ['show']]);
+
+	Route::resource('users', 'App\Http\Controllers\UserController', ['except' => ['show']]);
+
+	Route::resource('permissions', 'App\Http\Controllers\PermissionController', ['except' => ['show']]);
+	Route::get('permissions/{id}/delete', [PermissionController::class, 'delete'])->name('permissions.delete');
+
+	Route::resource('roles', 'App\Http\Controllers\RoleController', ['except' => ['show']]);
+	Route::get('roles/{id}/delete', [RoleController::class, 'delete'])->name('roles.delete');
 
 	/* Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]); */
 	Route::get('categorias/{id}/index', [CategoriaController::class, 'index'])->name('categorias.index');
