@@ -22,22 +22,40 @@
                                 @switch($menu)
                                     @case(1)
                                         <a
-                                            href="{{ route('presupuestosprogramados.create', ['id' => $vistaCategoriaPadre->id, 'menu' => $menu]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosprogramados.create', [
+                                                'id' => $vistaCategoriaPadre->id,
+                                                'menu' => $menu,
+                                                'ano' => $ano_actual,
+                                                'mes' => $mes_actual,
+                                            ]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(2)
                                         <a
-                                            href="{{ route('presupuestosejecutados.create', ['id' => $vistaCategoriaPadre->id]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosejecutados.create', [
+                                                'id' => $vistaCategoriaPadre->id,
+                                                'menu' => $menu,
+                                                'date' => $fecha_actual,
+                                            ]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(3)
                                         <a
-                                            href="{{ route('presupuestosprogramados.create', ['id' => $vistaCategoriaPadre->id, 'menu' => $menu]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosprogramados.create', [
+                                                'id' => $vistaCategoriaPadre->id,
+                                                'menu' => $menu,
+                                                'ano' => $ano_actual,
+                                                'mes' => $mes_actual,
+                                            ]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
 
                                     @case(4)
                                         <a
-                                            href="{{ route('presupuestosejecutados.create', ['id' => $vistaCategoriaPadre->id]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
+                                            href="{{ route('presupuestosejecutados.create', [
+                                                'id' => $vistaCategoriaPadre->id,
+                                                'menu' => $menu,
+                                                'date' => $fecha_actual,
+                                            ]) }}">{{ $vistaCategoriaPadre->categoria }}</a>
                                     @break
                                 @endswitch
 

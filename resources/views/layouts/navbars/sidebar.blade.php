@@ -30,12 +30,6 @@
                 <div class="collapse" id="ingresos">
                     <ul class="nav">
                         <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('presupuestosprogramados.index') }}">
-                                <i class="material-icons">developer_board</i>
-                                <span class="sidebar-normal">{{ __('Tablero') }} </span>
-                            </a>
-                        </li>
-                        <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
                             <a class="nav-link" href="{{ route('categorias.index', 1) }}">
                                 <i class="material-icons">developer_board</i>
                                 <span class="sidebar-normal">{{ __('Programado') }} </span>
@@ -61,12 +55,6 @@
                 </a>
                 <div class="collapse" id="egreso">
                     <ul class="nav">
-                        <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('presupuestosejecutados.index') }}">
-                                <i class="material-icons">developer_board</i>
-                                <span class="sidebar-normal">{{ __('Tablero') }} </span>
-                            </a>
-                        </li>
                         <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
                             <a class="nav-link" href="{{ route('categorias.index', 3) }}">
                                 <i class="material-icons">developer_board</i>
@@ -109,7 +97,6 @@
                     </ul>
                 </div>
             </li>
-
 
             {{-- Graficas --}}
             {{-- <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">

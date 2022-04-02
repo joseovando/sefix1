@@ -1,6 +1,8 @@
 @extends('layouts.app', ['activePage' => 'subcategoria', 'titlePage' => __('Subcategoria')])
 
 @section('content')
+
+
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript" language="javascript"

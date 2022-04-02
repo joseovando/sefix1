@@ -32,15 +32,24 @@ class CategoriaController extends Controller
                 break;
         }
 
+        $menu = $id;
+        $fecha_actual = date("Y-m-d");
+        $fecha_actual2 = strtotime($fecha_actual);
+        $ano_actual = date("Y", $fecha_actual2);
+        $mes_actual = date("m", $fecha_actual2);
+
         $vistaCategoriaPadres = DB::table('vista_categoria_padres')
             ->where('tipo', '=', $tipo)
             ->orderBy('orden', 'ASC')
             ->get();
 
-        return view('categorias.index', [
-            'vistaCategoriaPadres' => $vistaCategoriaPadres,
-            'menu' => $id,
-        ]);
+        return view('categorias.index', compact(
+            'vistaCategoriaPadres',
+            'menu',
+            'ano_actual',
+            'mes_actual',
+            'fecha_actual'
+        ));
     }
 
     public function tablero()

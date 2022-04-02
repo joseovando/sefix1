@@ -57,10 +57,38 @@ function mes_actual()
     return $mes;
 }
 
+function meses()
+{
+    $meses = array(
+        1 => 'Enero',
+        2 => 'Febrero',
+        3 => 'Marzo',
+        4 => 'Abril',
+        5 => 'Mayo',
+        6 => 'Junio',
+        7 => 'Julio',
+        8 => 'Agosto',
+        9 => 'Septiembre',
+        10 => 'Octubre',
+        11 => 'Noviembre',
+        12 => 'Diciembre'
+    );
+    return $meses;
+}
+
+function fechas_first_last($fecha_actual)
+{
+    $fecha_actual = strtotime($fecha_actual);
+    $fecha[0] = date("Y", $fecha_actual);
+    $fecha[1] = date("m", $fecha_actual);
+    return $fecha;
+}
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Egreso;
+use App\Models\EgresoProgramado;
 use App\Models\EgresoSetting;
 use App\Models\Ingreso;
 use App\Models\IngresoSetting;
@@ -149,7 +177,6 @@ class PresupuestoProgramadoController extends Controller
             }
         }
 
-
         $vistaIngresoProgramadoPadres = DB::table('vista_ingreso_programado')
             ->orderBy('orden_padre', 'ASC')
             ->whereBetween('fecha_promedio', mes_actual())
@@ -207,11 +234,47 @@ class PresupuestoProgramadoController extends Controller
         ]);
     }
 
-    public function create($id, Request $request)
+    public function create($id, $menu, $mes, $ano, Request $request)
     {
-        $titulo = "Egreso Programado";
+        switch ($menu) {
+            case 1:
+                $titulo = "Ingreso Programado";
+                $tipo = 1;
+                break;
+            case 2:
+                $titulo = "Ingreso Ejecutado";
+                $tipo = 1;
+                break;
+            case 3:
+                $titulo = "Egreso Programado";
+                $tipo = 2;
+                break;
+            case 4:
+                $titulo = "Egreso Ejecutado";
+                $tipo = 2;
+                break;
+        }
 
-        $vistaCategoriaPadres = VistaCategoriaPadre::all();
+        if (request('llave_form') == 1) {
+            $ano_actual = request('ano_actual');
+            $ano_actual_inicio = $ano_actual - 20;
+            $ano_actual_fin = $ano_actual + 20;
+            $mes_actual = request('mes_actual');
+            $fecha_actual = $ano_actual . "-" . $mes_actual . "-01";
+            $meses = meses();
+        } else {
+            $ano_actual = $ano;
+            $ano_actual_inicio = $ano_actual - 20;
+            $ano_actual_fin = $ano_actual + 20;
+            $mes_actual = $mes;
+            $fecha_actual = $ano_actual . "-" . $mes_actual . "-01";
+            $meses = meses();
+        }
+
+        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
+            ->where('tipo', '=', $tipo)
+            ->orderBy('orden', 'ASC')
+            ->get();
 
         $vistaCategorias = DB::table('vista_categorias')
             ->where('id_padre', '=', $id)
@@ -220,12 +283,94 @@ class PresupuestoProgramadoController extends Controller
 
         $frecuencias = Frecuencia::all();
 
+        if ($tipo == 1) {
+            $vistaIngresoProgramados = DB::table('vista_ingreso_programado')
+                ->where('id_padre', '=', $id)
+                ->orderBy('orden_categoria', 'ASC')
+                ->get();
+        } else {
+            $vistaIngresoProgramados = DB::table('vista_egreso_programado')
+                ->where('id_padre', '=', $id)
+                ->orderBy('orden_categoria', 'ASC')
+                ->get();
+        }
+
+        $id_ingreso_programado = array();
+        $monto = array();
+        $id_frecuencia = array();
+        $caducidad = array();
+        $fecha_inicio = array();
+        $fecha_fin = array();
+
+        foreach ($vistaIngresoProgramados as $vistaIngresoProgramado) {
+            $valor_caducidad = $vistaIngresoProgramado->sin_caducidad + 0;
+
+            if ($vistaIngresoProgramado->id_frecuencia == 1) //Unico
+            {
+                $id_ingreso_programado[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id;
+                $monto[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->monto_programado;
+                $id_frecuencia[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id_frecuencia;
+                $caducidad[$vistaIngresoProgramado->id_categoria] = $valor_caducidad;
+                $fecha_inicio[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_inicio;
+                $fecha_fin[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_fin;
+            }
+
+            if ($valor_caducidad == 1) {
+                $rango_fechas = fechas_first_last($fecha_actual);
+                $rango_inicio = fechas_first_last($vistaIngresoProgramado->fecha_inicio);
+
+                if (
+                    $rango_inicio[0] <= $rango_fechas[0]
+                    and $rango_inicio[1] <= $rango_fechas[1]
+                ) {
+                    $id_ingreso_programado[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id;
+                    $monto[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->monto_programado;
+                    $id_frecuencia[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id_frecuencia;
+                    $caducidad[$vistaIngresoProgramado->id_categoria] = $valor_caducidad;
+                    $fecha_inicio[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_inicio;
+                    $fecha_fin[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_fin;
+                }
+            } else {
+
+                $rango_fechas = fechas_first_last($fecha_actual);
+                $rango_inicio = fechas_first_last($vistaIngresoProgramado->fecha_inicio);
+                $rango_fin = fechas_first_last($vistaIngresoProgramado->fecha_fin);
+
+                if (
+                    $rango_inicio[0] <= $rango_fechas[0]
+                    and $rango_inicio[1] <= $rango_fechas[1]
+                    and $rango_fin[0] >= $rango_fechas[0]
+                    and $rango_fin[1] >= $rango_fechas[1]
+                ) {
+                    $id_ingreso_programado[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id;
+                    $monto[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->monto_programado;
+                    $id_frecuencia[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->id_frecuencia;
+                    $caducidad[$vistaIngresoProgramado->id_categoria] = $valor_caducidad;
+                    $fecha_inicio[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_inicio;
+                    $fecha_fin[$vistaIngresoProgramado->id_categoria] = $vistaIngresoProgramado->fecha_fin;
+                }
+            }
+        }
+
         return view('presupuestosprogramados.create', compact(
             'titulo',
             'vistaCategoriaPadres',
             'vistaCategorias',
             'frecuencias',
-            'id'
+            'id',
+            'menu',
+            'tipo',
+            'ano_actual',
+            'ano_actual_inicio',
+            'ano_actual_fin',
+            'meses',
+            'mes_actual',
+            'id_ingreso_programado',
+            'monto',
+            'id_frecuencia',
+            'caducidad',
+            'fecha_inicio',
+            'fecha_fin'
         ));
     }
 
@@ -311,29 +456,82 @@ class PresupuestoProgramadoController extends Controller
 
         foreach ($vistaCategorias as $vistaCategoria) {
 
+            $input_id = "id_" . $vistaCategoria->id;
+            $id_ingreso_programado = request($input_id) + 0;
             $input_monto = "monto_" . $vistaCategoria->id;
             $input_frecuencia = "frecuencia_" . $vistaCategoria->id;
-            $input_frecuencia = "frecuencia_" . $vistaCategoria->id;
             $input_sin_caducidad = "sin_caducidad_" . $vistaCategoria->id;
+
+            $valor_caducidad = request($input_sin_caducidad);
+            if ($valor_caducidad == 'on') {
+                $valor_caducidad = 1;
+            }
+
             $input_inicio = "inicio_" . $vistaCategoria->id;
             $input_fin = "fin_" . $vistaCategoria->id;
             $monto = request($input_monto) + 0;
 
-            if ($monto > 0) {
-                $ingresoProgramado = new IngresoProgramado();
-                $ingresoProgramado->id_categoria = $vistaCategoria->id;
-                $ingresoProgramado->monto_programado = $monto;
-                $ingresoProgramado->id_frecuencia = request($input_frecuencia);
-                $ingresoProgramado->sin_caducidad = request($input_sin_caducidad);
-                $ingresoProgramado->fecha_inicio = request($input_inicio);
-                $ingresoProgramado->fecha_fin = request($input_fin);
-                $ingresoProgramado->estado = 1;
-                $ingresoProgramado->id_user = 1;
-                $ingresoProgramado->save();
+            if (request('tipo') == 1) {
+
+                if ($id_ingreso_programado > 0) {
+                    if ($monto > 0) {
+                        $ingresoProgramado = IngresoProgramado::find(request($input_id));
+                        $ingresoProgramado->monto_programado = $monto;
+                        $ingresoProgramado->id_frecuencia = request($input_frecuencia);
+                        $ingresoProgramado->sin_caducidad = $valor_caducidad;
+                        $ingresoProgramado->fecha_inicio = request($input_inicio);
+                        $ingresoProgramado->fecha_fin = request($input_fin);
+                        $ingresoProgramado->update();
+                    }
+                } else {
+                    if ($monto > 0) {
+                        $ingresoProgramado = new IngresoProgramado();
+                        $ingresoProgramado->id_categoria = $vistaCategoria->id;
+                        $ingresoProgramado->monto_programado = $monto;
+                        $ingresoProgramado->id_frecuencia = request($input_frecuencia);
+                        $ingresoProgramado->sin_caducidad = $valor_caducidad;
+                        $ingresoProgramado->fecha_inicio = request($input_inicio);
+                        $ingresoProgramado->fecha_fin = request($input_fin);
+                        $ingresoProgramado->estado = 1;
+                        $ingresoProgramado->id_user = 1;
+                        $ingresoProgramado->save();
+                    }
+                }
+            } else {
+
+                if ($id_ingreso_programado > 0) {
+                    if ($monto > 0) {
+                        $egresoProgramado = EgresoProgramado::find(request($input_id));
+                        $egresoProgramado->monto_programado = $monto;
+                        $egresoProgramado->id_frecuencia = request($input_frecuencia);
+                        $egresoProgramado->sin_caducidad = $valor_caducidad;
+                        $egresoProgramado->fecha_inicio = request($input_inicio);
+                        $egresoProgramado->fecha_fin = request($input_fin);
+                        $egresoProgramado->update();
+                    }
+                } else {
+                    if ($monto > 0) {
+                        $egresoProgramado = new EgresoProgramado();
+                        $egresoProgramado->id_categoria = $vistaCategoria->id;
+                        $egresoProgramado->monto_programado = $monto;
+                        $egresoProgramado->id_frecuencia = request($input_frecuencia);
+                        $egresoProgramado->sin_caducidad = $valor_caducidad;
+                        $egresoProgramado->fecha_inicio = request($input_inicio);
+                        $egresoProgramado->fecha_fin = request($input_fin);
+                        $egresoProgramado->estado = 1;
+                        $egresoProgramado->id_user = 1;
+                        $egresoProgramado->save();
+                    }
+                }
             }
         }
 
-        return redirect()->route('presupuestosprogramados.index');
+        return redirect()->route('presupuestosprogramados.create', [
+            'id' => request('id_categoria'),
+            'menu' => request('menu'),
+            'ano' => request('ano_actual'),
+            'mes' => request('mes_actual'),
+        ]);
     }
 
     /**

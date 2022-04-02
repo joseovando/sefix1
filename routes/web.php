@@ -98,7 +98,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	/* Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]); */
 	Route::get('presupuestosprogramados/index', [PresupuestoProgramadoController::class, 'index'])->name('presupuestosprogramados.index');
-	Route::get('presupuestosprogramados/{id}/{menu}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
+	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
 	Route::post('presupuestosprogramados/store', [PresupuestoProgramadoController::class, 'store'])->name('presupuestosprogramados.store');
 	Route::get('presupuestosprogramados/{id}/{menu}/edit', [PresupuestoProgramadoController::class, 'edit'])->name('presupuestosprogramados.edit');
 	Route::put('presupuestosprogramados/update', [PresupuestoProgramadoController::class, 'update'])->name('presupuestosprogramados.update');
@@ -106,7 +106,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 	/* Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]); */
 	Route::get('presupuestosejecutados/index', [PresupuestoEjecutadoController::class, 'index'])->name('presupuestosejecutados.index');
-	Route::get('presupuestosejecutados/{id}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
+	Route::get('presupuestosejecutados/{id}/{menu}/{date}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
 	Route::post('presupuestosejecutados/store', [PresupuestoEjecutadoController::class, 'store'])->name('presupuestosejecutados.store');
 	Route::get('presupuestosejecutados/{id}/{menu}/edit', [PresupuestoEjecutadoController::class, 'edit'])->name('presupuestosejecutados.edit');
 	Route::put('presupuestosejecutados/update', [PresupuestoEjecutadoController::class, 'update'])->name('presupuestosejecutados.update');

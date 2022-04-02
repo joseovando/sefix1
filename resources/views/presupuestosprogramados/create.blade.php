@@ -24,6 +24,58 @@
                         </div>
                         <div class="card-body">
 
+                            <form method="get"
+                                action="{{ route('presupuestosprogramados.create', [
+                                    'id' => $id,
+                                    'menu' => $menu,
+                                    'ano' => $ano_actual,
+                                    'mes' => $mes_actual,
+                                ]) }}"
+                                autocomplete="off" class="form-horizontal">
+
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <label for="exampleFormControlSelect1">Mes Programado</label>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="form-group">
+
+                                            <select class="form-control" id="ano_actual" name="ano_actual">
+                                                @for ($i = $ano_actual_inicio; $i <= $ano_actual_fin; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == $ano_actual) selected @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                @endfor
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="form-group">
+
+                                            <select class="form-control" id="mes_actual" name="mes_actual">
+                                                @for ($i = 1; $i <= 12; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == $mes_actual) selected @endif>
+                                                        {{ $meses[$i] }}
+                                                    </option>
+                                                @endfor
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <button type="submit"
+                                            class="btn btn-primary">{{ __('Cambiar Mes Programado') }}</button>
+                                    </div>
+                                    <div class="col-sm">
+                                        <input type="hidden" name="llave_form" value="1">
+                                    </div>
+                                </div>
+
+                            </form>
+
                             <form method="post" action="{{ route('presupuestosprogramados.store') }}" autocomplete="off"
                                 class="form-horizontal">
 
@@ -40,7 +92,12 @@
                                                                 id="categoria" name="categoria">
                                                                 @foreach ($vistaCategoriaPadres as $vistaCategoriaPadre)
                                                                     <option
-                                                                        value="{{ route('presupuestosejecutados.create', $vistaCategoriaPadre->id) }}"
+                                                                        value="{{ route('presupuestosprogramados.create', [
+                                                                            'id' => $vistaCategoriaPadre->id,
+                                                                            'menu' => $menu,
+                                                                            'ano' => $ano_actual,
+                                                                            'mes' => $mes_actual,
+                                                                        ]) }}"
                                                                         @if ($id == $vistaCategoriaPadre->id) selected @endif>
                                                                         {{ $vistaCategoriaPadre->categoria }}
                                                                     </option>
@@ -48,6 +105,12 @@
                                                             </select>
                                                             <input type="hidden" name="id_categoria"
                                                                 value="{{ $id }}">
+                                                            <input type="hidden" name="tipo" value="{{ $tipo }}">
+                                                            <input type="hidden" name="menu" value="{{ $menu }}">
+                                                            <input type="hidden" name="mes_actual"
+                                                                value="{{ $mes_actual }}">
+                                                            <input type="hidden" name="ano_actual"
+                                                                value="{{ $ano_actual }}">
                                                         </div>
                                                     </th>
                                                     <th>Monto</th>
@@ -60,6 +123,26 @@
                                             <tbody>
                                                 @foreach ($vistaCategorias as $vistaCategoria)
                                                     <tr>
+
+                                                        <script>
+                                                            $(function() {
+                                                                if ($("#monto_{{ $vistaCategoria->id }}").val() > 0) {
+
+                                                                    if ($("#frecuencia_{{ $vistaCategoria->id }}").val() == 1) {
+                                                                        div_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                        fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                        div2_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                        sin_caducidad_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                    }
+
+                                                                    if ($("#sin_caducidad_{{ $vistaCategoria->id }}").is(":checked") == true) {
+                                                                        div_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                        fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                    }
+                                                                }
+                                                            });
+                                                        </script>
+
                                                         <th scope="row">{{ $vistaCategoria->categoria }}</th>
                                                         <td>
                                                             <div class="col-sm">
@@ -70,21 +153,28 @@
                                                                         name="monto_{{ $vistaCategoria->id }}"
                                                                         id="monto_{{ $vistaCategoria->id }}" type="text"
                                                                         placeholder="{{ __('monto') }}"
-                                                                        value="{{ old('monto', auth()->user()->monto) }}"
+                                                                        @if (isset($monto[$vistaCategoria->id])) value="{{ $monto[$vistaCategoria->id] }}" @endif
                                                                         style="width: 50px"
                                                                         onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" />
                                                                     <span id="result"></span>
                                                                     <script>
-                                                                        var inival = $("#monto_{{ $vistaCategoria->id }}").val();
                                                                         $("#monto_{{ $vistaCategoria->id }}").change(function() {
                                                                             if ($("#monto_{{ $vistaCategoria->id }}").val() > 0) {
-                                                                                inicio_{{ $vistaCategoria->id }}.setAttribute("required", "")
                                                                                 frecuencia_{{ $vistaCategoria->id }}.setAttribute("required", "")
+                                                                            } else {
+                                                                                frecuencia_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                                inicio_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                                div_{{ $vistaCategoria->id }}.style.display = 'initial';
+                                                                                fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                                div2_{{ $vistaCategoria->id }}.style.display = 'initial';
                                                                             }
                                                                         });
                                                                     </script>
                                                                 </div>
                                                             </div>
+
+                                                            <input type="hidden" name="id_{{ $vistaCategoria->id }}"
+                                                                @if (isset($id_ingreso_programado[$vistaCategoria->id])) value="{{ $id_ingreso_programado[$vistaCategoria->id] }}" @endif>
                                                         </td>
 
                                                         <td>
@@ -93,22 +183,36 @@
                                                                     <select class="form-control"
                                                                         id="frecuencia_{{ $vistaCategoria->id }}"
                                                                         name="frecuencia_{{ $vistaCategoria->id }}">
-                                                                        <option value="0">Frecuencia</option>
+                                                                        <option value="">Frecuencia</option>
                                                                         @foreach ($frecuencias as $frecuencia)
-                                                                            <option value="{{ $frecuencia->id }}">
+                                                                            <option value="{{ $frecuencia->id }}"
+                                                                                @if (isset($id_frecuencia[$vistaCategoria->id])) @if ($id_frecuencia[$vistaCategoria->id] == $frecuencia->id) 
+                                                                                    selected @endif
+                                                                                @endif
+                                                                                >
                                                                                 {{ $frecuencia->frecuencia }}
                                                                             </option>
                                                                         @endforeach
                                                                     </select>
                                                                     <script>
-                                                                        document.getElementById('frecuencia_' + '{!! $vistaCategoria->id !!}').addEventListener('change', function(event) {
-                                                                            if (this.options.selectedIndex === 1) {
-                                                                                div_{{ $vistaCategoria->id }}.style.display = 'none';
-                                                                                fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                        document.getElementById('frecuencia_' + '{!! $vistaCategoria->id !!}').addEventListener('change', function(
+                                                                            event) {
 
-                                                                            } else {
-                                                                                div_{{ $vistaCategoria->id }}.style.display = 'initial';
-                                                                                fin_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                            if ($("#monto_{{ $vistaCategoria->id }}").val() > 0) {
+                                                                                if ($("#frecuencia_{{ $vistaCategoria->id }}").val() == 1) {
+                                                                                    inicio_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                                    div_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                                    fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                                    div2_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                                    sin_caducidad_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                                }
+
+                                                                                if ($("#frecuencia_{{ $vistaCategoria->id }}").val() > 1) {
+                                                                                    inicio_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                                    div_{{ $vistaCategoria->id }}.style.display = 'initial';
+                                                                                    fin_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                                    div2_{{ $vistaCategoria->id }}.style.display = 'initial';
+                                                                                }
                                                                             }
                                                                         });
                                                                     </script>
@@ -118,13 +222,16 @@
 
                                                         <td align="center">
                                                             <div class="col-sm">
-                                                                <div class="form-check form-check-inline">
+                                                                <div class="form-check form-check-inline"
+                                                                    id="div2_{{ $vistaCategoria->id }}">
                                                                     <label class="form-check-label">
                                                                         <input class="form-check-input" type="checkbox"
                                                                             id="sin_caducidad_{{ $vistaCategoria->id }}"
-                                                                            value="1"
-                                                                            name="sin_caducidad_{{ $vistaCategoria->id }}"
-                                                                            onchange="javascript:showContent_{{ $vistaCategoria->id }}()">
+                                                                            @if (isset($caducidad[$vistaCategoria->id])) @if ($caducidad[$vistaCategoria->id] == 1) value="1" checked
+                                                                            @else
+                                                                            value="1" @endif
+                                                                            @endif
+                                                                        name="sin_caducidad_{{ $vistaCategoria->id }}">
                                                                         <span class="form-check-sign">
                                                                             <span class="check"></span>
                                                                         </span>
@@ -132,16 +239,18 @@
                                                                 </div>
                                                             </div>
                                                             <script type="text/javascript">
-                                                                function showContent_{{ $vistaCategoria->id }}() {
-                                                                    if (document.getElementById('sin_caducidad_' + '{!! $vistaCategoria->id !!}').checked === true) {
-                                                                        div_{{ $vistaCategoria->id }}.style.display = 'none';
-                                                                        fin_{{ $vistaCategoria->id }}.removeAttribute("required");
-                                                                    } else {
-                                                                        div_{{ $vistaCategoria->id }}.style.display = 'initial';
-                                                                        fin_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                $("#sin_caducidad_{{ $vistaCategoria->id }}").change(function() {
 
+                                                                    if ($("#monto_{{ $vistaCategoria->id }}").val() > 0) {
+                                                                        if (document.getElementById('sin_caducidad_' + '{!! $vistaCategoria->id !!}').checked === true) {
+                                                                            div_{{ $vistaCategoria->id }}.style.display = 'none';
+                                                                            fin_{{ $vistaCategoria->id }}.removeAttribute("required");
+                                                                        } else {
+                                                                            div_{{ $vistaCategoria->id }}.style.display = 'initial';
+                                                                            fin_{{ $vistaCategoria->id }}.setAttribute("required", "");
+                                                                        }
                                                                     }
-                                                                }
+                                                                });
                                                             </script>
                                                         </td>
 
@@ -150,7 +259,8 @@
                                                                 <div class="form-group">
                                                                     <input id="inicio_{{ $vistaCategoria->id }}"
                                                                         width="110"
-                                                                        name="inicio_{{ $vistaCategoria->id }}" />
+                                                                        name="inicio_{{ $vistaCategoria->id }}"
+                                                                        @if (isset($fecha_inicio[$vistaCategoria->id])) value="{{ $fecha_inicio[$vistaCategoria->id] }}" @endif />
                                                                     <script>
                                                                         var html = '#inicio_' + '{!! $vistaCategoria->id !!}';
                                                                         $(html).datepicker({
@@ -167,7 +277,8 @@
                                                                 id="div_{{ $vistaCategoria->id }}" style="initial">
                                                                 <div class="form-group">
                                                                     <input id="fin_{{ $vistaCategoria->id }}" width="110"
-                                                                        name="fin_{{ $vistaCategoria->id }}" />
+                                                                        name="fin_{{ $vistaCategoria->id }}"
+                                                                        @if (isset($fecha_fin[$vistaCategoria->id])) value="{{ $fecha_fin[$vistaCategoria->id] }}" @endif />
                                                                     <script>
                                                                         var html = '#fin_' + '{!! $vistaCategoria->id !!}';
                                                                         $(html).datepicker({
