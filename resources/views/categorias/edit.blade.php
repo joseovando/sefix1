@@ -1,8 +1,9 @@
 @extends('layouts.app', ['activePage' => 'subcategorias', 'titlePage' => __('Editar Subcategoria')])
 @section('content')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/defaults-es_ES.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
 
     <div class="content">
         <div class="container-fluid">
@@ -41,7 +42,7 @@
                                             <label for="exampleFormControlSelect1">Categoria</label><br>
 
                                             <select class="form-control selectpicker show-tick" data-live-search="true"
-                                                id="_categoria" name="categoria">
+                                                id="_categoria" name="categoria" required>
                                                 <option value="">Seleccione Categoria</option>
                                                 <optgroup label="Tipo Ingreso">
                                                     @foreach ($vistaCategoriaIngresos as $vistaCategoriaIngreso)
@@ -60,7 +61,8 @@
                                                     @endforeach
                                                 </optgroup>
                                             </select>
-                                            <input type="hidden" value="{{ $vistaCategoria->id }}" name="id_subcategoria">
+                                            <input type="hidden" value="{{ $vistaCategoria->id }}"
+                                                name="id_subcategoria">
                                         </div>
                                     </div>
 

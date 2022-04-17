@@ -977,8 +977,8 @@ pre code {
 
 .container {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 2px;
+  padding-left: 2px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -1009,8 +1009,8 @@ pre code {
 
 .container-fluid {
   width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 2px;
+  padding-left: 2px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -1106,8 +1106,8 @@ pre code {
   position: relative;
   width: 100%;
   min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: 2px;
+  padding-left: 2px;
 }
 
 .col {
@@ -14460,7 +14460,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 
 @media screen and (min-width: 768px) {
   .footer .copyright {
-    padding-right: 15px;
+    padding-right: 2px;
   }
 }
 
@@ -16968,7 +16968,7 @@ label {
 }
 
 .card .card-body {
-  padding: 0.9375rem 20px;
+  padding: 0.9375rem 2px;
   position: relative;
 }
 
@@ -17855,8 +17855,8 @@ Copyright (c) 2015 Daniel Eden
 @media all and (max-width: 991px) {
   [class*="navbar-expand-"]>.container,
   [class*="navbar-expand-"]>.container-fluid {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 2px;
+    padding-right: 2px;
   }
   .navbar .navbar-collapse .navbar-nav>li.button-container {
     padding: 15px;
@@ -18196,7 +18196,7 @@ Copyright (c) 2015 Daniel Eden
   }
   .card .form-horizontal .label-on-left,
   .card .form-horizontal .label-on-right {
-    padding-left: 15px;
+    padding-left: 2px;
     padding-top: 8px;
   }
   .card .form-horizontal .form-group {

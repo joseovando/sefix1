@@ -1,87 +1,213 @@
 <?php
 
-function dias_calendario($date)
+function dias_calendario($date, $dia_semana)
 {
     $fechaActual = $date;
+    $dias_faltantes = 7 - $dia_semana;
+    $contador = $dia_semana;
 
-    $date_future = strtotime('-4 day', strtotime($fechaActual));
-    $calendario[0] = date('d F', $date_future);
+    for ($i = 0; $i < $dia_semana; $i++) {
+        $dias_diferencia = $i - $dia_semana + 1;
+        $diferencia_text = $dias_diferencia . " day";
+        $date_future = strtotime($diferencia_text, strtotime($fechaActual));
+        $calendario[$i] = date('d F', $date_future);
+        $fecha[$i] = date('Y_m_d', $date_future);
+    }
 
-    $date_future = strtotime('-3 day', strtotime($fechaActual));
-    $calendario[1] = date('d F', $date_future);
+    for ($i = 1; $i <= $dias_faltantes; $i++) {
+        $diferencia_text = "+" . $i . " day";
+        $date_future = strtotime($diferencia_text, strtotime($fechaActual));
+        $calendario[$contador] = date('d F', $date_future);
+        $fecha[$contador] = date('Y_m_d', $date_future);
+        $contador++;
+    }
 
-    $date_future = strtotime('-2 day', strtotime($fechaActual));
-    $calendario[2] = date('d F', $date_future);
-
-    $date_future = strtotime('-1 day', strtotime($fechaActual));
-    $calendario[3] = date('d F', $date_future);
-
-    $date_future = strtotime('+0 day', strtotime($fechaActual));
-    $calendario[4] = date('d F', $date_future);
-
-    // $calendario[4] = date('d F');
-
-    $date_future = strtotime('+1 day', strtotime($fechaActual));
-    $calendario[5] = date('d F', $date_future);
-
-    $date_future = strtotime('+2 day', strtotime($fechaActual));
-    $calendario[6] = date('d F', $date_future);
-
-    $date_future = strtotime('+3 day', strtotime($fechaActual));
-    $calendario[7] = date('d F', $date_future);
-
-    $date_future = strtotime('+4 day', strtotime($fechaActual));
-    $calendario[8] = date('d F', $date_future);
-
-    return $calendario;
+    return array(
+        $calendario,
+        $fecha,
+    );
 }
 
-function fechas($date)
+function mes_actual4($fecha_actual)
 {
-    $fechaActual = $date;
+    $fecha_actual_num = strtotime($fecha_actual);
+    $ano_actual = date("Y", $fecha_actual_num);
+    $mes_actual = date("m", $fecha_actual_num);
 
-    $date_future = strtotime('-4 day', strtotime($fechaActual));
-    $fecha[0] = date('Y_m_d', $date_future);
+    $date_future = strtotime('+1 month', strtotime($fecha_actual));
+    $mes_futuro = date('Y-m-d', $date_future);
 
-    $date_future = strtotime('-3 day', strtotime($fechaActual));
-    $fecha[1] = date('Y_m_d', $date_future);
+    $fecha_actual_num = strtotime($mes_futuro);
+    $ano_future = date("Y", $fecha_actual_num);
+    $mes_future = date("m", $fecha_actual_num);
 
-    $date_future = strtotime('-2 day', strtotime($fechaActual));
-    $fecha[2] = date('Y_m_d', $date_future);
-
-    $date_future = strtotime('-1 day', strtotime($fechaActual));
-    $fecha[3] = date('Y_m_d', $date_future);
-
-    $date_future = strtotime('+0 day', strtotime($fechaActual));
-    $fecha[4] = date('Y_m_d', $date_future);
-
-    // $fecha[4] = date('Y_m_d');
-
-    $date_future = strtotime('+1 day', strtotime($fechaActual));
-    $fecha[5] = date('Y_m_d', $date_future);
-
-    $date_future = strtotime('+2 day', strtotime($fechaActual));
-    $fecha[6] = date('Y_m_d', $date_future);
-
-    $date_future = strtotime('+3 day', strtotime($fechaActual));
-    $fecha[7] = date('Y_m_d', $date_future);
-
-    $date_future = strtotime('+4 day', strtotime($fechaActual));
-    $fecha[8] = date('Y_m_d', $date_future);
-
-    return $fecha;
-}
-
-function mes_actual($fecha_actual)
-{
-    $fecha_actual = strtotime($fecha_actual);
-    $ano_actual = date("Y", $fecha_actual);
-    $mes_actual = date("m", $fecha_actual);
-    $mes_despues = $mes_actual + 1;
     $mes[0] = $ano_actual . "-" . $mes_actual . "-01";
-    $mes[1] = $ano_actual . "-" . $mes_despues . "-01";
-    
+    $mes_last = $ano_future . "-" . $mes_future . "-01";
+    $date_future = strtotime('-1 day', strtotime($mes_last));
+    $mes[1] = date('Y-m-d', $date_future);
     return $mes;
+}
+
+function date_frecuencia4($fecha_actual, $fecha_inicial, $fecha_final, $frecuencia)
+{
+    $mes_actual = mes_actual4($fecha_actual);
+    $fecha_frecuencia = $fecha_inicial;
+    $contador = 1;
+
+    //echo "PASO_4 " . $fecha_actual . " FECHA FRECUENCIA " . $fecha_frecuencia . " < " . $mes_actual[0] . "<br>";
+
+    if ($fecha_inicial < $fecha_final) {
+
+        while ($fecha_frecuencia < $mes_actual[0]) {
+            //echo "while date_frecuencia " . $fecha_frecuencia . " < " . $mes_actual[0] . "<br>";
+            $frecuencia_neo = $frecuencia * $contador;
+            $frecuencia_texto = "+" . $frecuencia_neo . " month";
+            $date_future = strtotime($frecuencia_texto, strtotime($fecha_inicial));
+            $fecha_frecuencia = date('Y-m-d', $date_future);
+            $contador++;
+        }
+
+        if ($fecha_frecuencia > $fecha_final) {
+            $contador = 1;
+
+            while ($fecha_frecuencia > $mes_actual[1]) {
+                //echo "date_frecuencia " . $fecha_frecuencia . " > " . $mes_actual[1] . "<br>";
+                $frecuencia = $frecuencia * $contador;
+                $frecuencia_texto = "-" . $frecuencia . " month";
+                $date_future = strtotime($frecuencia_texto, strtotime($fecha_frecuencia));
+                $fecha_frecuencia = date('Y-m-d', $date_future);
+                $contador++;
+            }
+        }
+    }
+
+    //echo "RESULTADO FECHA PROMEDIO " . $fecha_frecuencia . "<br>";
+    return $fecha_frecuencia;
+}
+
+function date_frecuencia_caducidad4($fecha_actual, $fecha_inicial, $frecuencia)
+{
+    $mes_actual = mes_actual4($fecha_actual);
+    $fecha_frecuencia = $fecha_inicial;
+    $contador = 1;
+
+    //echo "PASO_4 " . $fecha_actual . " FECHA FRECUENCIA " . $fecha_frecuencia . " < " . $mes_actual[0] . "<br>";
+
+    while ($fecha_frecuencia < $mes_actual[0]) {
+        //echo "date_frecuencia_caducidad " . $fecha_frecuencia . " < " . $mes_actual[0] . "<br>";
+        $frecuencia_neo = $frecuencia * $contador;
+        $frecuencia_texto = "+" . $frecuencia_neo . " month";
+        $date_future = strtotime($frecuencia_texto, strtotime($fecha_inicial));
+        $fecha_frecuencia = date('Y-m-d', $date_future);
+        $contador++;
+    }
+
+    //echo "RESULTADO FECHA PROMEDIO " . $fecha_frecuencia . "<br>";
+    return $fecha_frecuencia;
+}
+
+function total_monto_programado4($fecha_actual, $mes_actual, $array_programados)
+{
+    $total_egreso_programado = 0;
+
+    foreach ($array_programados as $vistaEgresoProgramado) {
+
+        if ($vistaEgresoProgramado->id_frecuencia == 1) {
+
+            if (
+                $vistaEgresoProgramado->fecha_inicio >= $mes_actual[0]
+                and $vistaEgresoProgramado->fecha_inicio < $mes_actual[1]
+            ) {
+                $total_egreso_programado = $total_egreso_programado + $vistaEgresoProgramado->monto_programado;
+            }
+        } else {
+            $caducidad = $vistaEgresoProgramado->sin_caducidad + 0;
+
+            if ($caducidad == 1) {
+
+                $fecha_promedio = date_frecuencia_caducidad4(
+                    $fecha_actual,
+                    $vistaEgresoProgramado->fecha_inicio,
+                    $vistaEgresoProgramado->valor_numerico
+                );
+
+                if (
+                    $fecha_promedio >= $mes_actual[0]
+                    and $fecha_promedio <= $mes_actual[1]
+                ) {
+                    $total_egreso_programado = $total_egreso_programado + $vistaEgresoProgramado->monto_programado;
+                }
+            } else {
+
+                $fecha_promedio = date_frecuencia4(
+                    $fecha_actual,
+                    $vistaEgresoProgramado->fecha_inicio,
+                    $vistaEgresoProgramado->fecha_fin,
+                    $vistaEgresoProgramado->valor_numerico
+                );
+
+                if (
+                    $fecha_promedio >= $mes_actual[0]
+                    and $fecha_promedio <= $mes_actual[1]
+                ) {
+                    $total_egreso_programado = $total_egreso_programado + $vistaEgresoProgramado->monto_programado;
+                }
+            }
+        }
+    }
+    return $total_egreso_programado;
+}
+
+function total_subcategoria_mes4($fecha_actual, $categoria, $tipo)
+{
+    $mes_actual = mes_actual4($fecha_actual);
+
+    if ($tipo == 2) {
+        $vistaEgresos = DB::table('vista_egresos')
+            ->where('estado', '=', 1)
+            ->where('id_user', '=', auth()->id())
+            ->where('id_categoria', '=', $categoria)
+            ->whereBetween('fecha', $mes_actual)
+            ->orderBy('fecha', 'ASC')
+            ->get();
+    } else {
+        $vistaEgresos = DB::table('vista_ingresos')
+            ->where('estado', '=', 1)
+            ->where('id_user', '=', auth()->id())
+            ->where('id_categoria', '=', $categoria)
+            ->whereBetween('fecha', $mes_actual)
+            ->orderBy('fecha', 'ASC')
+            ->get();
+    }
+
+    $total_egreso = 0;
+
+    foreach ($vistaEgresos as $vistaEgreso) {
+        $total_egreso = $total_egreso + $vistaEgreso->monto_ejecutado;
+    }
+
+    if ($tipo == 2) {
+        $vistaEgresoProgramados = DB::table('vista_egreso_programado')
+            ->where('estado_egreso_programado', '=', 1)
+            ->where('id_user_egreso_programado', '=', auth()->id())
+            ->where('id_categoria', '=', $categoria)
+            ->orderBy('fecha_inicio', 'ASC')
+            ->get();
+    } else {
+        $vistaEgresoProgramados = DB::table('vista_ingreso_programado')
+            ->where('estado_ingreso_programado', '=', 1)
+            ->where('id_user_ingreso_programado', '=', auth()->id())
+            ->where('id_categoria', '=', $categoria)
+            ->orderBy('fecha_inicio', 'ASC')
+            ->get();
+    }
+
+    $total_egreso_programado = total_monto_programado4($fecha_actual, $mes_actual, $vistaEgresoProgramados);
+
+    return array(
+        $total_egreso,
+        $total_egreso_programado,
+    );
 }
 
 namespace App\Http\Controllers;
@@ -89,11 +215,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use App\Models\Egreso;
 use App\Models\EgresoSetting;
-use App\Models\Frecuencia;
 use App\Models\Ingreso;
 use App\Models\IngresoSetting;
-use App\Models\VistaCategoria;
-use App\Models\VistaCategoriaPadre;
 
 use Illuminate\Http\Request;
 
@@ -106,14 +229,6 @@ class PresupuestoEjecutadoController extends Controller
      */
     public function index()
     {
-        $vistaEgresos = DB::table('vista_egresos')
-            ->where('estado', '=', 1)
-            ->orderBy('fecha', 'ASC')
-            ->get();
-
-        return view('presupuestosejecutados.index', [
-            'vistaEgresos' => $vistaEgresos
-        ]);
     }
 
     /**
@@ -122,7 +237,7 @@ class PresupuestoEjecutadoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function create($id, $menu, $date, Request $request)
+    public function create($id, $menu, $date, $estado, Request $request)
     {
         $id_categoria = $id;
 
@@ -151,47 +266,31 @@ class PresupuestoEjecutadoController extends Controller
 
         $vistaCategoriaPadres = DB::table('vista_categoria_padres')
             ->where('tipo', '=', $tipo)
+            ->where('estado', '=', 1)
             ->orderBy('orden', 'ASC')
             ->get();
 
         $vistaCategorias = DB::table('vista_categorias')
             ->where('id_padre', '=', $id)
+            ->where('estado', '=', 1)
             ->orderBy('orden', 'ASC')
             ->get();
 
-        $calendario = dias_calendario($date);
-        $fechas = fechas($date);
-        $n_inputs = 8;
+        $dia_semana = date("N", strtotime($date));
+        list($calendario, $fechas) = dias_calendario($date, $dia_semana);
+
+        $n_inputs = 6;
         $egreso[0][0] = 0;
         $detalle[0][0] = '';
+        $total_ejecutado_mes = 0;
+        $total_programado_mes = 0;
 
         foreach ($vistaCategorias as $vistaCategoria) {
-            $total_monto_mes[$vistaCategoria->id] = 0;
-
-            $mes_actual = mes_actual($date);
-
-            if ($tipo == 2) {
-                $total_meses = DB::table('vista_egresos')
-                    ->whereBetween('fecha', $mes_actual)
-                    ->where('id_categoria', '=', $vistaCategoria->id)
-                    ->where('estado', '=', 1)
-                    ->get();
-            } else {
-                $total_meses = DB::table('vista_ingresos')
-                    ->whereBetween('fecha', $mes_actual)
-                    ->where('id_categoria', '=', $vistaCategoria->id)
-                    ->where('estado', '=', 1)
-                    ->get();
-            }
-
-            foreach ($total_meses as $total_mes) {
-                $total_monto_mes[$vistaCategoria->id] = $total_monto_mes[$vistaCategoria->id] + $total_mes->monto_ejecutado;
-            }
+            $mes_actual = mes_actual4($date);
 
             for ($i = 0; $i <= $n_inputs; $i++) {
 
                 $total_monto_dia[$i] = 0;
-
                 $fecha = str_replace("_", "-", $fechas[$i]);
 
                 if ($tipo == 2) {
@@ -199,24 +298,28 @@ class PresupuestoEjecutadoController extends Controller
                         ->where('id_categoria', '=', $vistaCategoria->id)
                         ->where('fecha', '=', $fecha)
                         ->where('estado', '=', 1)
+                        ->where('id_user', '=', auth()->id())
                         ->get();
 
                     $total_dias = DB::table('vista_egresos')
                         ->where('fecha', '=', $fecha)
                         ->where('id_padre', '=', $id)
                         ->where('estado', '=', 1)
+                        ->where('id_user', '=', auth()->id())
                         ->get();
                 } else {
                     $egreso_montos = DB::table('ingreso')
                         ->where('id_categoria', '=', $vistaCategoria->id)
                         ->where('fecha', '=', $fecha)
                         ->where('estado', '=', 1)
+                        ->where('id_user', '=', auth()->id())
                         ->get();
 
                     $total_dias = DB::table('vista_ingresos')
                         ->where('fecha', '=', $fecha)
                         ->where('id_padre', '=', $id)
                         ->where('estado', '=', 1)
+                        ->where('id_user', '=', auth()->id())
                         ->get();
                 }
 
@@ -233,11 +336,14 @@ class PresupuestoEjecutadoController extends Controller
                     }
                 }
             }
-        }
 
-        $total = 0;
-        foreach ($total_monto_mes as $item) {
-            $total = $total + $item;
+            list(
+                $total_ejecutado_subcategoria[$vistaCategoria->id],
+                $total_programado_subcategoria[$vistaCategoria->id]
+            ) = total_subcategoria_mes4($date, $vistaCategoria->id, $tipo);
+
+            $total_ejecutado_mes = $total_ejecutado_mes + $total_ejecutado_subcategoria[$vistaCategoria->id];
+            $total_programado_mes = $total_programado_mes + $total_programado_subcategoria[$vistaCategoria->id];
         }
 
         return view('presupuestosejecutados.create', compact(
@@ -250,13 +356,16 @@ class PresupuestoEjecutadoController extends Controller
             'egreso',
             'detalle',
             'total_monto_dia',
-            'total_monto_mes',
-            'total',
+            'total_ejecutado_subcategoria',
+            'total_programado_subcategoria',
+            'total_ejecutado_mes',
+            'total_programado_mes',
             'date',
             'titulo',
             'menu',
             'tipo',
             'date',
+            'estado',
         ));
     }
 
@@ -268,11 +377,14 @@ class PresupuestoEjecutadoController extends Controller
      */
     public function store(Request $request)
     {
-        $fechas = fechas(request('date'));
-        $n_inputs = 8;
+        //$fechas = fechas(request('date'));
+        $dia_semana = date("N", strtotime(request('date')));
+        list($calendario, $fechas) = dias_calendario(request('date'), $dia_semana);
+        $n_inputs = 6;
 
         $vistaCategorias = DB::table('vista_categorias')
             ->where('id_padre', '=', request('id_categoria'))
+            ->where('estado', '=', 1)
             ->orderBy('orden', 'ASC')
             ->get();
 
@@ -290,6 +402,8 @@ class PresupuestoEjecutadoController extends Controller
 
                         $egreso_montos = DB::table('egreso')
                             ->where('id_categoria', '=', $vistaCategoria->id)
+                            ->where('estado', '=', 1)
+                            ->where('id_user', '=', auth()->id())
                             ->where('fecha', '=', $fecha)
                             ->get();
 
@@ -313,6 +427,7 @@ class PresupuestoEjecutadoController extends Controller
                             $egreso->fecha = $fecha;
                             $egreso->monto_ejecutado = $monto_egreso;
                             $egreso->estado = 1;
+                            $egreso->id_user = auth()->id();
                             $egreso->save();
 
                             $egresoSetting = new EgresoSetting();
@@ -320,6 +435,7 @@ class PresupuestoEjecutadoController extends Controller
                             $egresoSetting->id_frecuencia = 1;
                             $egresoSetting->fecha_inicio = $fecha;
                             $egresoSetting->estado = 1;
+                            $egresoSetting->id_user = auth()->id();
                             $egresoSetting->save();
                         }
                     } else {
@@ -327,6 +443,8 @@ class PresupuestoEjecutadoController extends Controller
                         $ingreso_montos = DB::table('ingreso')
                             ->where('id_categoria', '=', $vistaCategoria->id)
                             ->where('fecha', '=', $fecha)
+                            ->where('estado', '=', 1)
+                            ->where('id_user', '=', auth()->id())
                             ->get();
 
                         $ingresoMonto = 0;
@@ -349,6 +467,7 @@ class PresupuestoEjecutadoController extends Controller
                             $ingreso->fecha = $fecha;
                             $ingreso->monto_ejecutado = $monto_egreso;
                             $ingreso->estado = 1;
+                            $ingreso->id_user = auth()->id();
                             $ingreso->save();
 
                             $ingresoSetting = new IngresoSetting();
@@ -356,6 +475,7 @@ class PresupuestoEjecutadoController extends Controller
                             $ingresoSetting->id_frecuencia = 1;
                             $ingresoSetting->fecha_inicio = $fecha;
                             $ingresoSetting->estado = 1;
+                            $ingresoSetting->id_user = auth()->id();
                             $ingresoSetting->save();
                         }
                     }
@@ -363,10 +483,13 @@ class PresupuestoEjecutadoController extends Controller
             }
         }
 
+        $estado = 1;
+
         return redirect()->route('presupuestosejecutados.create', [
             'id' => request('id_categoria'),
             'menu' => request('menu'),
             'date' => request('date'),
+            'estado' => $estado,
         ]);
     }
 
@@ -389,39 +512,6 @@ class PresupuestoEjecutadoController extends Controller
      */
     public function edit($id, $menu)
     {
-        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
-            ->where('tipo', '=', 1)
-            ->orderBy('orden', 'ASC')
-            ->get();
-
-        $frecuencias = Frecuencia::all();
-
-        $titulo = "Editar Egreso";
-
-        $egreso = Egreso::find($id);
-        $egresoSetting = egresoSetting::where('id_egreso', $egreso->id)->first();
-
-        $idCategoriaPadre = DB::table('vista_categorias')
-            ->where('id', '=', $egreso->id_categoria)
-            ->first();
-
-        $id_categoria_padre = $idCategoriaPadre->id_padre;
-
-        $vistaCategorias = DB::table('vista_categorias')
-            ->where('id_padre', '=', $id_categoria_padre)
-            ->orderBy('orden', 'ASC')
-            ->get();
-
-        return view('presupuestosejecutados.edit', [
-            'vistaCategoriaPadres' => $vistaCategoriaPadres,
-            'vistaCategorias' => $vistaCategorias,
-            'id_categoria_padre' => $id_categoria_padre,
-            'frecuencias' => $frecuencias,
-            'egreso' => $egreso,
-            'egresoSetting' => $egresoSetting,
-            'menu' => $menu,
-            'titulo' => $titulo
-        ]);
     }
 
     /**
@@ -433,23 +523,6 @@ class PresupuestoEjecutadoController extends Controller
      */
     public function update(Request $request)
     {
-        $egreso = Egreso::find(request('id'));
-        $egreso->id_categoria = request('subcategoria');
-        $egreso->monto_programado = request('monto_programado');
-        $egreso->monto_ejecutado = request('monto_ejecutado');
-        $egreso->fecha = request('inicio');
-        $egreso->update();
-
-        $idEgresoSetting = EgresoSetting::where('id_egreso', request('id'))->first();
-
-        $egresoSetting = EgresoSetting::find($idEgresoSetting->id);
-        $egresoSetting->id_frecuencia = request('frecuencia');
-        $egresoSetting->fecha_inicio = request('inicio');
-        $egresoSetting->fecha_fin = request('fin');
-        $egresoSetting->sin_caducidad = request('sin_caducidad');
-        $egresoSetting->update();
-
-        return redirect()->route('presupuestosejecutados.index');
     }
 
     /**
@@ -465,16 +538,5 @@ class PresupuestoEjecutadoController extends Controller
 
     public function delete($id)
     {
-        $egreso = Egreso::find($id);
-        $egreso->estado = 0;
-        $egreso->update();
-
-        $idEgresoSetting = EgresoSetting::where('id_egreso', $id)->first();
-
-        $egresoSetting = EgresoSetting::find($idEgresoSetting->id);
-        $egresoSetting->estado = 0;
-        $egresoSetting->update();
-
-        return redirect()->route('presupuestosejecutados.index');
     }
 }

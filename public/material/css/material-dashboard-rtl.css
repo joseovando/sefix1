@@ -1158,7 +1158,7 @@ html[dir="rtl"] .is-filled .bmd-label-floating {
 
 html[dir="rtl"] .alert.alert-with-icon {
   padding-right: 66px;
-  padding-left: 15px;
+  padding-left: 2px;
 }
 
 html[dir="rtl"] .alert.alert-with-icon i[data-notify="icon"] {

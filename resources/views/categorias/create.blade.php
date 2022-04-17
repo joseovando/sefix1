@@ -1,8 +1,9 @@
 @extends('layouts.app', ['activePage' => 'subcategorias', 'titlePage' => __('Nueva Subcategoria')])
 @section('content')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/defaults-es_ES.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
 
     <div class="content">
         <div class="container-fluid">
@@ -40,20 +41,36 @@
                                             <label for="exampleFormControlSelect1">Categoria</label><br>
 
                                             <select class="form-control selectpicker show-tick" data-live-search="true"
-                                                id="_categoria" name="categoria">
+                                                id="_categoria" name="categoria" required>
                                                 <option value="">Seleccione Categoria</option>
                                                 <optgroup label="Tipo Ingreso">
                                                     @foreach ($vistaCategoriaIngresos as $vistaCategoriaIngreso)
-                                                        <option value="{{ $vistaCategoriaIngreso->id }}">
-                                                            {{ $vistaCategoriaIngreso->categoria }}
-                                                        </option>
+                                                        @if ($vistaCategoriaIngreso->plantilla == 1)
+                                                            <option value="{{ $vistaCategoriaIngreso->id }}">
+                                                                {{ $vistaCategoriaIngreso->categoria }}
+                                                            </option>
+                                                        @else
+                                                            @if ($vistaCategoriaIngreso->id_user == auth()->id())
+                                                                <option value="{{ $vistaCategoriaIngreso->id }}">
+                                                                    {{ $vistaCategoriaIngreso->categoria }}
+                                                                </option>
+                                                            @endif
+                                                        @endif
                                                     @endforeach
                                                 </optgroup>
                                                 <optgroup label="Tipo Egreso">
                                                     @foreach ($vistaCategoriaEgresos as $vistaCategoriaEgreso)
-                                                        <option value="{{ $vistaCategoriaEgreso->id }}">
-                                                            {{ $vistaCategoriaEgreso->categoria }}
-                                                        </option>
+                                                        @if ($vistaCategoriaEgreso->plantilla == 1)
+                                                            <option value="{{ $vistaCategoriaEgreso->id }}">
+                                                                {{ $vistaCategoriaEgreso->categoria }}
+                                                            </option>
+                                                        @else
+                                                            @if ($vistaCategoriaEgreso->id_user == auth()->id())
+                                                                <option value="{{ $vistaCategoriaEgreso->id }}">
+                                                                    {{ $vistaCategoriaEgreso->categoria }}
+                                                                </option>
+                                                            @endif
+                                                        @endif
                                                     @endforeach
                                                 </optgroup>
                                             </select>

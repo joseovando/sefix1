@@ -1,8 +1,9 @@
 @extends('layouts.app', ['activePage' => 'presupuestosprogramados', 'titlePage' => __( $titulo )])
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('js/gijgo.min.js') }}" type="text/javascript"></script>
+<link href="{{ asset('css/gijgo.min.css') }}" rel="stylesheet" type="text/css" />
+<script src="{{ asset('js/messages.es-es.js') }}" type="text/javascript"></script>
 
 @section('content')
     <div class="content">
@@ -112,6 +113,7 @@
                                             <script>
                                                 $('#inicio').datepicker({
                                                     showOtherMonths: true,
+                                                    locale: 'es-es',
                                                     format: 'yyyy-mm-dd'
                                                 });
                                             </script>
@@ -125,6 +127,7 @@
                                             <script>
                                                 $('#fin').datepicker({
                                                     showOtherMonths: true,
+                                                    locale: 'es-es',
                                                     format: 'yyyy-mm-dd'
                                                 });
                                             </script>

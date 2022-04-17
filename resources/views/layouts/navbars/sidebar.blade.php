@@ -5,11 +5,16 @@
 
       Tip 2: you can also add an image using data-image tag
   -->
-    <div class="logo">
-        <a href="#" class="simple-text logo-normal">
-        </a>
-        <img src="{{ asset('img/sefix_logo.png') }}" width="90%">
-    </div>
+
+    @if (preg_match('/(android|webos|avantgo|iphone|ipod|ipad|bolt|boost|cricket|docomo|fone|hiptop|opera mini|mini|kitkat|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i', $_SERVER['HTTP_USER_AGENT']))
+    @else
+        <div class="logo">
+            <a href="#" class="simple-text logo-normal">
+            </a>
+            <img src="{{ asset('img/sefix_logo.png') }}" width="90%">
+        </div>
+    @endif
+
     <div class="sidebar-wrapper">
         <ul class="nav">
             <li class="nav-item{{ $activePage == 'dashboard' ? ' active' : '' }}">
@@ -71,6 +76,52 @@
                 </div>
             </li>
 
+            {{-- cuentas --}}
+            <li class="nav-item {{ $activePage == 'cuentas' || $activePage == 'cuentas' ? ' active' : '' }}">
+                <a class="nav-link" data-toggle="collapse" href="#cuentas" aria-expanded="true">
+                    <i class="material-icons">monetization_on</i>
+                    <p>{{ __('Cuentas') }}
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="cuentas">
+                    <ul class="nav">
+                        <li class="nav-item{{ $activePage == 'por_cobrar' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('cuentas.index', [
+                                    'id' => 1,
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                ]) }}">
+                                <i class="material-icons">money_off</i>
+                                <span class="sidebar-normal">{{ __('Por Cobrar') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'por_pagar' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('cuentas.index', [
+                                    'id' => 2,
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                ]) }}">
+                                <i class="material-icons">attach_money</i>
+                                <span class="sidebar-normal">{{ __('Por Pagar') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'reporte' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('cuentas.reporte', [
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                ]) }}">
+                                <i class="material-icons">insert_chart</i>
+                                <span class="sidebar-normal">{{ __('Reporte') }} </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             {{-- Categorias --}}
             <li
                 class="nav-item {{ $activePage == 'categorias' || $activePage == 'user-management' ? ' active' : '' }}">
@@ -92,6 +143,58 @@
                             <a class="nav-link" href="{{ route('categorias.tablero') }}">
                                 <i class="material-icons">question_answer</i>
                                 <span class="sidebar-normal">{{ __('Subcategorias') }} </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            {{-- Reportes --}}
+            <li class="nav-item {{ $activePage == 'reportes' || $activePage == 'reportes' ? ' active' : '' }}">
+                <a class="nav-link" data-toggle="collapse" href="#reportes" aria-expanded="true">
+                    <i class="material-icons">assessment</i>
+                    <p>{{ __('Reportes') }}
+                        <b class="caret"></b>
+                    </p>
+                </a>
+                <div class="collapse" id="reportes">
+                    <ul class="nav">
+                        <li class="nav-item{{ $activePage == 'reportes' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('reportes.index', [
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                ]) }}">
+                                <i class="material-icons">insert_chart</i>
+                                <span class="sidebar-normal">{{ __('General') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'reportes' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('reportes.categoria', [
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                    'tipo' => 1,
+                                ]) }}">
+                                <i class="material-icons">insert_chart</i>
+                                <span class="sidebar-normal">{{ __('Ingreso') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'reportes' ? ' active' : '' }}">
+                            <a class="nav-link"
+                                href="{{ route('reportes.categoria', [
+                                    'ano' => 1,
+                                    'mes' => 1,
+                                    'tipo' => 2,
+                                ]) }}">
+                                <i class="material-icons">insert_chart</i>
+                                <span class="sidebar-normal">{{ __('Egreso') }} </span>
+                            </a>
+                        </li>
+                        <li class="nav-item{{ $activePage == 'reportes' ? ' active' : '' }}">
+                            <a class="nav-link" href="{{ route('reportes.tablero') }}">
+                                <i class="material-icons">insert_chart</i>
+                                <span class="sidebar-normal">{{ __('Categorias') }} </span>
                             </a>
                         </li>
                     </ul>

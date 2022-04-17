@@ -1,8 +1,9 @@
 @extends('layouts.app', ['activePage' => 'categorias', 'titlePage' => __('Nueva Categoria')])
 @section('content')
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
+    <script src="{{ asset('js/defaults-es_ES.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
 
     <div class="content">
         <div class="container-fluid">
@@ -38,8 +39,9 @@
                                     <div class="col-sm">
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Tipo de Categoria</label>
-                                            <select class="form-control" id="_tipo_categoria" name="tipo_categoria">
-                                                <option>Seleccione Tipo de Categoria</option>
+                                            <select class="form-control" id="_tipo_categoria" name="tipo_categoria"
+                                                required>
+                                                <option value="">Seleccione Tipo de Categoria</option>
                                                 @foreach ($categoriaTipos as $categoriaTipo)
                                                     <option value="{{ $categoriaTipo->id }}">
                                                         {{ $categoriaTipo->tipo_categoria }}
@@ -71,8 +73,8 @@
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Logo Categoria</label>
                                             <select class="form-control selectpicker" id="_logo_categoria"
-                                                name="logo_categoria">
-                                                <option>Seleccione Logo</option>
+                                                name="logo_categoria" required>
+                                                <option value="">Seleccione Logo</option>
                                                 @foreach ($categoriaLogos as $categoriaLogo)
                                                     <option
                                                         value="{{ $categoriaLogo->icono }} {{ $categoriaLogo->tamano }}"
@@ -88,8 +90,8 @@
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Fondo Categoria</label>
                                             <select class="form-control selectpicker" id="_fondo_categoria"
-                                                name="fondo_categoria">
-                                                <option>Seleccione Fondo Categoria</option>
+                                                name="fondo_categoria" required>
+                                                <option value="">Seleccione Fondo Categoria</option>
                                                 <option value="bg-secondary" class="bg-secondary">Plomo</option>
                                                 <option value="bg-primary" class="bg-primary">Azul</option>
                                                 <option value="bg-danger" class="bg-danger">Rojo</option>

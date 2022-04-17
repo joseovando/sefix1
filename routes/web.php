@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\PresupuestoEjecutadoController;
 use App\Http\Controllers\PresupuestoProgramadoController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\RoleController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -65,7 +66,6 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::group(['middleware' => 'auth'], function () {
-	/* Route::resource('users', 'App\Http\Controllers\UserController', ['except' => ['show']]); */
 
 	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
@@ -81,7 +81,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('roles', 'App\Http\Controllers\RoleController', ['except' => ['show']]);
 	Route::get('roles/{id}/delete', [RoleController::class, 'delete'])->name('roles.delete');
 
-	/* Route::resource('categorias', 'App\Http\Controllers\CategoriaController', ['except' => ['show']]); */
+	Route::get('reportes/{mes}/{ano}/index', [ReporteController::class, 'index'])->name('reportes.index');
+	Route::get('reportes/{mes}/{ano}/{tipo}/categoria', [ReporteController::class, 'categoria'])->name('reportes.categoria');
+	Route::get('reportes/tablero', [ReporteController::class, 'tablero'])->name('reportes.tablero');
+	Route::get('reportes/{mes}/{ano}/{categoria}/subcategoria', [ReporteController::class, 'subcategoria'])->name('reportes.subcategoria');
+
 	Route::get('categorias/{id}/index', [CategoriaController::class, 'index'])->name('categorias.index');
 	Route::get('categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
 	Route::get('categorias/create_categoria', [CategoriaController::class, 'create_categoria'])->name('categorias.create_categoria');
@@ -96,21 +100,26 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('categorias/{id}/delete', [CategoriaController::class, 'delete'])->name('categorias.delete');
 	Route::get('categorias/{id}/delete_categoria', [CategoriaController::class, 'delete_categoria'])->name('categorias.delete_categoria');
 
-	/* Route::resource('presupuestosprogramados', 'App\Http\Controllers\PresupuestoProgramadoController', ['except' => ['show']]); */
 	Route::get('presupuestosprogramados/index', [PresupuestoProgramadoController::class, 'index'])->name('presupuestosprogramados.index');
-	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
+	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/{estado}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
 	Route::post('presupuestosprogramados/store', [PresupuestoProgramadoController::class, 'store'])->name('presupuestosprogramados.store');
 	Route::get('presupuestosprogramados/{id}/{menu}/edit', [PresupuestoProgramadoController::class, 'edit'])->name('presupuestosprogramados.edit');
 	Route::put('presupuestosprogramados/update', [PresupuestoProgramadoController::class, 'update'])->name('presupuestosprogramados.update');
 	Route::get('presupuestosprogramados/{id}/{menu}/delete', [PresupuestoProgramadoController::class, 'delete'])->name('presupuestosprogramados.delete');
 
-	/* Route::resource('presupuestosejecutados', 'App\Http\Controllers\PresupuestoEjecutadoController', ['except' => ['show']]); */
 	Route::get('presupuestosejecutados/index', [PresupuestoEjecutadoController::class, 'index'])->name('presupuestosejecutados.index');
-	Route::get('presupuestosejecutados/{id}/{menu}/{date}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
+	Route::get('presupuestosejecutados/{id}/{menu}/{date}/{estado}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
 	Route::post('presupuestosejecutados/store', [PresupuestoEjecutadoController::class, 'store'])->name('presupuestosejecutados.store');
 	Route::get('presupuestosejecutados/{id}/{menu}/edit', [PresupuestoEjecutadoController::class, 'edit'])->name('presupuestosejecutados.edit');
 	Route::put('presupuestosejecutados/update', [PresupuestoEjecutadoController::class, 'update'])->name('presupuestosejecutados.update');
 	Route::get('presupuestosejecutados/{id}/{menu}/delete', [PresupuestoEjecutadoController::class, 'delete'])->name('presupuestosejecutados.delete');
+
+	Route::get('cuentas/{id}/{mes}/{ano}/index', [CuentaController::class, 'index'])->name('cuentas.index');
+	Route::post('cuentas/store', [CuentaController::class, 'store'])->name('cuentas.store');
+	Route::get('cuentas/{id}/{mes}/{ano}/getVistaCuentas', 'App\Http\Controllers\CuentaController@getVistaCuentas')->name('cuentas.getVistaCuentas');
+	Route::get('cuentas/{id}/edit', 'App\Http\Controllers\CuentaController@edit')->name('cuentas.edit');
+	Route::get('cuentas/{id}/delete', 'App\Http\Controllers\CuentaController@delete')->name('cuentas.delete');
+	Route::get('cuentas/{mes}/{ano}/reporte', [CuentaController::class, 'reporte'])->name('cuentas.reporte');
 
 	Route::resource('presupuestosporcategorias', 'App\Http\Controllers\PresupuestoPorCategoriaController', ['except' => ['show']]);
 

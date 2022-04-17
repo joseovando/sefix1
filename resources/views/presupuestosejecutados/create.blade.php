@@ -1,8 +1,9 @@
 @extends('layouts.app', ['activePage' => 'presupuestosejecutados', 'titlePage' => __($titulo)])
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
-<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+<script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('js/gijgo.min.js') }}" type="text/javascript"></script>
+<link href="{{ asset('css/gijgo.min.css') }}" rel="stylesheet" type="text/css" />
+<script src="{{ asset('js/messages.es-es.js') }}" type="text/javascript"></script>
 
 <script>
     function nav(value) {
@@ -11,6 +12,27 @@
         }
     }
 </script>
+
+<script>
+    $(function() {
+        var estado = JSON.parse(`<?php echo $estado; ?>`);
+        if (estado == 1) {
+            md.showNotification('top', 'right').notify({});
+        }
+    });
+</script>
+
+<style>
+    textarea,
+    input {
+        padding: 10px;
+        font-family: FontAwesome, "Open Sans", Verdana, sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: inherit;
+    }
+
+</style>
 
 @section('content')
     <div class="content">
@@ -30,6 +52,7 @@
                                     'id' => $id_categoria,
                                     'menu' => $menu,
                                     'date' => $date,
+                                    'estado' => $estado,
                                 ]) }}"
                                 autocomplete="off" class="form-horizontal">
                                 <div class="row">
@@ -41,7 +64,9 @@
                                             <script>
                                                 $('#date').datepicker({
                                                     showOtherMonths: true,
-                                                    format: 'yyyy-mm-dd'
+                                                    locale: 'es-es',
+                                                    format: 'yyyy-mm-dd',
+                                                    weekStartDay: 1
                                                 });
                                             </script>
                                         </div>
@@ -75,15 +100,31 @@
                                                             <select onChange=nav(this.value) class="form-control"
                                                                 id="categoria" name="categoria">
                                                                 @foreach ($vistaCategoriaPadres as $vistaCategoriaPadre)
-                                                                    <option
-                                                                        value="{{ route('presupuestosejecutados.create', [
-                                                                            'id' => $vistaCategoriaPadre->id,
-                                                                            'menu' => $menu,
-                                                                            'date' => $date,
-                                                                        ]) }}"
-                                                                        @if ($id_categoria == $vistaCategoriaPadre->id) selected @endif>
-                                                                        {{ $vistaCategoriaPadre->categoria }}
-                                                                    </option>
+                                                                    @if ($vistaCategoriaPadre->plantilla == 1)
+                                                                        <option
+                                                                            value="{{ route('presupuestosejecutados.create', [
+                                                                                'id' => $vistaCategoriaPadre->id,
+                                                                                'menu' => $menu,
+                                                                                'date' => $date,
+                                                                                'estado' => $estado,
+                                                                            ]) }}"
+                                                                            @if ($id_categoria == $vistaCategoriaPadre->id) selected @endif>
+                                                                            {{ $vistaCategoriaPadre->categoria }}
+                                                                        </option>
+                                                                    @else
+                                                                        @if ($vistaCategoriaPadre->id_user == auth()->id())
+                                                                            <option
+                                                                                value="{{ route('presupuestosejecutados.create', [
+                                                                                    'id' => $vistaCategoriaPadre->id,
+                                                                                    'menu' => $menu,
+                                                                                    'date' => $date,
+                                                                                    'estado' => $estado,
+                                                                                ]) }}"
+                                                                                @if ($id_categoria == $vistaCategoriaPadre->id) selected @endif>
+                                                                                {{ $vistaCategoriaPadre->categoria }}
+                                                                            </option>
+                                                                        @endif
+                                                                    @endif
                                                                 @endforeach
                                                             </select>
                                                             <input type="hidden" name="id_categoria"
@@ -96,88 +137,195 @@
                                                     @for ($i = 0; $i <= $n_inputs; $i++)
                                                         <th scope="col">{{ $calendario[$i] }}</th>
                                                     @endfor
-                                                    <th scope="col">Total Mes</th>
+                                                    <th scope="col">Total Ejecutado Mes</th>
+                                                    <th scope="col">Total Programado Mes</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
 
                                                 @foreach ($vistaCategorias as $vistaCategoria)
-                                                    <tr>
-                                                        <th scope="row">{{ $vistaCategoria->categoria }}</th>
-                                                        @for ($i = 0; $i <= $n_inputs; $i++)
-                                                            <td>
-                                                                <div class="input-group mb-3">
+                                                    @if ($vistaCategoria->plantilla == 1)
+                                                        <tr>
+                                                            <th scope="row">{{ $vistaCategoria->categoria }}</th>
+                                                            @for ($i = 0; $i <= $n_inputs; $i++)
+                                                                <td>
+                                                                    <div class="input-group mb-3">
 
-                                                                    <input type="text" class="form-control"
-                                                                        name="{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
-                                                                        @if (isset($egreso[$i][$vistaCategoria->id])) value="{{ $egreso[$i][$vistaCategoria->id] }}" @endif
-                                                                        onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+                                                                        <input type="text" class="form-control"
+                                                                            name="{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
+                                                                            style="font-family: FontAwesome"
+                                                                            placeholder="&#xf0d6;"
+                                                                            @if (isset($egreso[$i][$vistaCategoria->id])) value="{{ $egreso[$i][$vistaCategoria->id] }}" @endif
+                                                                            onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
 
-                                                                    <a href="" data-toggle="modal"
-                                                                        data-target="#modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"><i
-                                                                            class="material-icons">description</i></a>
+                                                                        <a href="" data-toggle="modal"
+                                                                            data-target="#modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"><i
+                                                                                class="material-icons">description</i></a>
 
-                                                                    <div id="modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
-                                                                        class="modal fade" tabindex="-1" role="dialog"
-                                                                        aria-labelledby="exampleModalPopoversLabel"
-                                                                        style="display: none;" aria-hidden="true">
-                                                                        <div class="modal-dialog" role="document">
-                                                                            <div class="modal-content">
-                                                                                <div class="modal-header">
-                                                                                    <h5 class="modal-title"
-                                                                                        id="exampleModalPopoversLabel">
-                                                                                        Detalle
-                                                                                    </h5>
-                                                                                    <button type="button"
-                                                                                        class="close"
-                                                                                        data-dismiss="modal"
-                                                                                        aria-label="Close">
-                                                                                        <span aria-hidden="true">×</span>
-                                                                                    </button>
-                                                                                </div>
-                                                                                <div class="modal-body">
-                                                                                    <div class="form-group">
-                                                                                        <label
-                                                                                            for="exampleFormControlTextarea1">Detalle</label>
-                                                                                        @if (isset($detalle[$i][$vistaCategoria->id]))
-                                                                                            <textarea class="form-control" name="detalle_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
-                                                                                                rows="5">{{ $detalle[$i][$vistaCategoria->id] }}</textarea>
-                                                                                        @else
-                                                                                            <textarea class="form-control" name="detalle_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}" rows="3"></textarea>
-                                                                                        @endif
+                                                                        <div id="modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
+                                                                            class="modal fade" tabindex="-1"
+                                                                            role="dialog"
+                                                                            aria-labelledby="exampleModalPopoversLabel"
+                                                                            style="display: none;" aria-hidden="true">
+                                                                            <div class="modal-dialog" role="document">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h5 class="modal-title"
+                                                                                            id="exampleModalPopoversLabel">
+                                                                                            Detalle
+                                                                                        </h5>
+                                                                                        <button type="button"
+                                                                                            class="close"
+                                                                                            data-dismiss="modal"
+                                                                                            aria-label="Close">
+                                                                                            <span
+                                                                                                aria-hidden="true">×</span>
+                                                                                        </button>
                                                                                     </div>
-                                                                                </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button"
-                                                                                        class="btn btn-secondary"
-                                                                                        data-dismiss="modal">Cerrar</button>
+                                                                                    <div class="modal-body">
+                                                                                        <div class="form-group">
+                                                                                            <label
+                                                                                                for="exampleFormControlTextarea1">Detalle</label>
+                                                                                            @if (isset($detalle[$i][$vistaCategoria->id]))
+                                                                                                <textarea class="form-control" name="detalle_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
+                                                                                                    rows="5">{{ $detalle[$i][$vistaCategoria->id] }}</textarea>
+                                                                                            @else
+                                                                                                <textarea class="form-control" name="detalle_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}" rows="3"></textarea>
+                                                                                            @endif
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <button type="button"
+                                                                                            class="btn btn-secondary"
+                                                                                            data-dismiss="modal">Cerrar</button>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
 
-                                                                </div>
-                                                            </td>
-                                                        @endfor
-                                                        @if ($total_monto_mes[$vistaCategoria->id] > 0)
-                                                            <th scope="row">{{ $total_monto_mes[$vistaCategoria->id] }}
-                                                            </th>
-                                                        @else
-                                                            <th scope="row"></th>
+                                                                    </div>
+                                                                </td>
+                                                            @endfor
+
+                                                            @if ($total_ejecutado_subcategoria[$vistaCategoria->id] > 0)
+                                                                <th scope="row" bgcolor="#fec87c">
+                                                                    {{ $total_ejecutado_subcategoria[$vistaCategoria->id] }}
+                                                                </th>
+                                                            @else
+                                                                <th scope="row" bgcolor="#fec87c"></th>
+                                                            @endif
+
+                                                            @if ($total_programado_subcategoria[$vistaCategoria->id] > 0)
+                                                                <th scope="row" bgcolor="#0cd0e8">
+                                                                    {{ $total_programado_subcategoria[$vistaCategoria->id] }}
+                                                                </th>
+                                                            @else
+                                                                <th scope="row" bgcolor="#0cd0e8"></th>
+                                                            @endif
+
+                                                        </tr>
+                                                    @else
+                                                        @if ($vistaCategoria->id_user == auth()->id())
+                                                            <tr>
+                                                                <th scope="row">{{ $vistaCategoria->categoria }}</th>
+                                                                @for ($i = 0; $i <= $n_inputs; $i++)
+                                                                    <td>
+                                                                        <div class="input-group mb-3">
+
+                                                                            <input type="text" class="form-control"
+                                                                                name="{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
+                                                                                style="font-family: FontAwesome"
+                                                                                placeholder="&#xf0d6;"
+                                                                                @if (isset($egreso[$i][$vistaCategoria->id])) value="{{ $egreso[$i][$vistaCategoria->id] }}" @endif
+                                                                                onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;">
+
+                                                                            <a href="" data-toggle="modal"
+                                                                                data-target="#modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"><i
+                                                                                    class="material-icons">description</i></a>
+
+                                                                            <div id="modal_{{ $vistaCategoria->id }}_{{ $fechas[$i] }}"
+                                                                                class="modal fade" tabindex="-1"
+                                                                                role="dialog"
+                                                                                aria-labelledby="exampleModalPopoversLabel"
+                                                                                style="display: none;" aria-hidden="true">
+                                                                                <div class="modal-dialog" role="document">
+                                                                                    <div class="modal-content">
+                                                                                        <div class="modal-header">
+                                                                                            <h5 class="modal-title"
+                                                                                                id="exampleModalPopoversLabel">
+                                                                                                Detalle
+                                                                                            </h5>
+                                                                                            <button type="button"
+                                                                                                class="close"
+                                                                                                data-dismiss="modal"
+                                                                                                aria-label="Close">
+                                                                                                <span
+                                                                                                    aria-hidden="true">×</span>
+                                                                                            </button>
+                                                                                        </div>
+                                                                                        <div class="modal-body">
+                                                                                            <div class="form-group">
+                                                                                                <label
+                                                                                                    for="exampleFormControlTextarea1">Detalle</label>
+                                                                                                @if (isset($detalle[$i][$vistaCategoria->id]))
+                                                                                                    <blade
+                                                                                                        ___html_tags_2___ />
+                                                                                                @else
+                                                                                                    <blade
+                                                                                                        ___html_tags_3___ />
+                                                                                                @endif
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div class="modal-footer">
+                                                                                            <button type="button"
+                                                                                                class="btn btn-secondary"
+                                                                                                data-dismiss="modal">Cerrar</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </td>
+                                                                @endfor
+
+                                                                @if ($total_ejecutado_subcategoria[$vistaCategoria->id] > 0)
+                                                                    <th scope="row" bgcolor="#fec87c">
+                                                                        {{ $total_ejecutado_subcategoria[$vistaCategoria->id] }}
+                                                                    </th>
+                                                                @else
+                                                                    <th scope="row" bgcolor="#fec87c"></th>
+                                                                @endif
+
+                                                                @if ($total_programado_subcategoria[$vistaCategoria->id] > 0)
+                                                                    <th scope="row" bgcolor="#0cd0e8">
+                                                                        {{ $total_programado_subcategoria[$vistaCategoria->id] }}
+                                                                    </th>
+                                                                @else
+                                                                    <th scope="row" bgcolor="#0cd0e8"></th>
+                                                                @endif
+
+                                                            </tr>
                                                         @endif
-                                                    </tr>
+                                                    @endif
                                                 @endforeach
+
                                                 <tr>
                                                     <th scope="row">Total</th>
                                                     @for ($i = 0; $i <= $n_inputs; $i++)
                                                         @if ($total_monto_dia[$i] > 0)
-                                                            <th scope="row">{{ $total_monto_dia[$i] }}</th>
+                                                            <th scope="row" bgcolor="#7adf7f" align="right">
+                                                                {{ $total_monto_dia[$i] }}</th>
                                                         @else
-                                                            <th scope="row"></th>
+                                                            <th scope="row" bgcolor="#7adf7f" align="right"></th>
                                                         @endif
                                                     @endfor
-                                                    <th scope="row">{{ $total }}</th>
+                                                    <th scope="row" bgcolor="#fec87c" align="right">
+                                                        {{ $total_ejecutado_mes }}</th>
+                                                    <th scope="row" bgcolor="#0cd0e8" align="right">
+                                                        {{ $total_programado_mes }}</th>
                                                 </tr>
+
                                             </tbody>
                                         </table>
                                     </div>

@@ -1,20 +1,15 @@
 @extends('layouts.app', ['activePage' => 'dashboard', 'titlePage' => __('Dashboard')])
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-<script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script type="text/javascript" language="javascript"
-src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('css/jquery.dataTables.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.dataTables.min.css') }}">
 
-<script type="text/javascript" language="javascript"
-src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" language="javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script type="text/javascript" language="javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script type="text/javascript" language="javascript"
-src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script type="text/javascript" language="javascript"
-src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jquery-3.5.1.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/dataTables.buttons.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/jszip.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/pdfmake.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/vfs_fonts.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ asset('js/buttons.html5.min.js') }}"></script>
 
 <script type="text/javascript" class="init">
     $(document).ready(function() {
@@ -41,19 +36,14 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 
             <div class="row">
 
-                <div class="col-md-6">
-                    <div class="card card-chart">
-                        <div class="card-header">
-                            <div class="chart-wrapper">
-                                <canvas id="bar-ingresos-egresos-mes" height="400"></canvas>
-                            </div>
-                        </div>
-                        <div class="card-body">
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-warning">
                             <h4 class="card-title">Relación Ingresos Egresos Ejecutado</h4>
-                            <p class="card-category">
-                                <span class="text-success"><i
-                                        class="fa fa-long-arrow-up"></i>{{ $mes_actual_text }}</span>
-                            </p>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingresos-egresos-mes" height="308"></canvas>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
@@ -66,10 +56,16 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
                 <div class="col-lg-6 col-md-12">
                     <div class="card">
                         <div class="card-header card-header-warning">
-                            <h4 class="card-title">Relación Ingresos Egresos Ejecutado</h4>
+                            <h4 class="card-title">Relación Ingresos Egresos Mensual</h4>
                             <p class="card-category">{{ $mes_actual_text }}</p>
                         </div>
                         <div class="card-body table-responsive">
+
+                            @if ($navegador_mobile == 1)
+                            @else
+                                <br><br>
+                            @endif
+
                             <table class="table table-hover">
                                 <thead class="text-warning">
                                     <th>Detalle</th>
@@ -81,51 +77,37 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
                                 <tbody>
                                     <tr>
                                         <td>Ingreso</td>
-                                        <td>{{ number_format($total_ingreso, 2) }}</td>
-                                        <td>{{ number_format($total_ingreso_programado, 2) }}</td>
-                                        <td>{{ number_format($diferencia_ingreso, 2) }}</td>
-                                        <td>{{ number_format($porcentaje_ingreso, 2) }}%</td>
+                                        <td>{{ number_format($total_ingreso_bar, 2) }}</td>
+                                        <td>{{ number_format($total_ingreso_programado_bar, 2) }}</td>
+                                        <td>{{ number_format($diferencia_ingreso_bar, 2) }}</td>
+                                        <td>{{ number_format($porcentaje_ingreso_bar, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Egreso</td>
-                                        <td>{{ number_format($total_egreso, 2) }}</td>
-                                        <td>{{ number_format($total_egreso_programado, 2) }}</td>
-                                        <td>{{ number_format($diferencia_egreso, 2) }}</td>
-                                        <td>{{ number_format($porcentaje_egreso, 2) }}%</td>
+                                        <td>{{ number_format($total_egreso_bar, 2) }}</td>
+                                        <td>{{ number_format($total_egreso_programado_bar, 2) }}</td>
+                                        <td>{{ number_format($diferencia_egreso_bar, 2) }}</td>
+                                        <td>{{ number_format($porcentaje_egreso_bar, 2) }}%</td>
                                     </tr>
                                     <tr>
                                         <td>Saldo</td>
-                                        <td>{{ number_format($saldo_ejecutado, 2) }}</td>
-                                        <td>{{ number_format($saldo_programado, 2) }}</td>
+                                        <td>{{ number_format($saldo_ejecutado_bar, 2) }}</td>
+                                        <td>{{ number_format($saldo_programado_bar, 2) }}</td>
                                         <td></td>
                                         <td></td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
+                            @if ($navegador_mobile == 1)
+                            @else
+                                <br><br>
+                            @endif
 
-            <div class="row">
-
-                <div class="col-md-12">
-                    <div class="card card-chart">
-                        <div class="card-header">
-                            <div class="chart-wrapper">
-                                <canvas id="bar-ingresos-egresos-anual" height="400"></canvas>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h4 class="card-title">DISTRIBUCION DEL EGRESO PROGRAMADO Y EJECUTADO</h4>
-                            <p class="card-category">
-                                <span class="text-success"><i class="fa fa-long-arrow-up"></i>Marzo 2022</span>
-                            </p>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
-                                <i class="material-icons">access_time</i> Actualizado al 30/03/2022
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
                             </div>
                         </div>
                     </div>
@@ -135,66 +117,167 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 
             <div class="row">
 
-                <div class="col-md-6">
-                    <div class="card card-chart">
-                        <div class="card-header">
-                            <div class="chart-wrapper">
-                                <div id="piechart_3d" style="height: 500px;"></div>
-                            </div>
+                <div class="col-lg-12 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-success">
+                            <h4 class="card-title">Relación Ingresos Egresos Anual</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
                         </div>
-                        <div class="card-body">
-                            <h4 class="card-title">DISTRIBUCION DEL INGRESO PROGRAMADO Y EJECUTADO</h4>
-                            <p class="card-category">
-                                <span class="text-success"><i class="fa fa-long-arrow-up"></i>Marzo 2022</span>
-                            </p>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingresos-egresos-anual" height="300"></canvas>
                         </div>
                         <div class="card-footer">
                             <div class="stats">
-                                <i class="material-icons">access_time</i> Actualizado al 30/03/2022
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="card card-chart" style=" width: 100%; overflow-x: scroll;">
-                        <table id="example2" class="display" style="width:80%">
-                            <thead>
-                                <tr>
-                                    <th>Detalle</th>
-                                    <th>Ejecutado</th>
-                                    <th>Programado</th>
-                                    <th>Diferencia Numeral</th>
-                                    <th>Diferencia Porcentual</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for ($i = 0; $i < $contador; $i++)
+            </div>
+
+            <div class="row">
+
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-rose">
+                            <h4 class="card-title">Distribución del Egreso Mensual</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            @if ($navegador_mobile == 1)
+                                <div id="piechart_3d"></div>
+                            @else
+                                <div id="piechart_3d" style="height: 600px;"></div>
+                            @endif
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-rose">
+                            <h4 class="card-title">Distribución del Egreso Programado Ejecutado</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table id="example2" class="display" style="width:100%">
+                                <thead>
                                     <tr>
-                                        <td>{{ $nombre_categoria[$i] }}</td>
-                                        <td>{{ $egreso_categoria_mes[$i] }}</td>
-                                        <td>{{ $egreso_categoria_programado_mes[$i] }}</td>
-                                        <td>{{ $diferencia_egreso_categoria_mes[$i] }}</td>
-                                        <td>{{ $porcentaje_egreso_categoria_mes[$i] }}</td>
+                                        <th>Detalle</th>
+                                        <th>Ejecutado</th>
+                                        <th>Programado</th>
+                                        <th>Diferencia Numeral</th>
+                                        <th>Diferencia Porcentual</th>
                                     </tr>
-                                @endfor
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th>{{ $total_egreso_categoria_mes }}</th>
-                                    <th>{{ $total_egreso_categoria_programado_mes }}</th>
-                                    <th>{{ $total_diferencia_egreso_categoria_mes }}</th>
-                                    <th>{{ $total_porcentaje_egreso_categoria_mes }}</th>
+                                </thead>
+                                <tbody>
+                                    @for ($i = 0; $i < $contador; $i++)
+                                        <tr>
+                                            <td>{{ $nombre_categoria[$i] }}</td>
+                                            <td>{{ number_format($egreso_categoria_mes[$i], 2) }}</td>
+                                            <td>{{ number_format($egreso_categoria_programado_mes[$i], 2) }}</td>
+                                            <td>{{ number_format($diferencia_egreso_categoria_mes[$i], 2) }}</td>
+                                            <td>{{ number_format($porcentaje_egreso_categoria_mes[$i], 2) }}</td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Total</th>
+                                        <th>{{ number_format($total_egreso_categoria_mes, 2) }}</th>
+                                        <th>{{ number_format($total_egreso_categoria_programado_mes, 2) }}</th>
+                                        <th>{{ number_format($total_diferencia_egreso_categoria_mes, 2) }}</th>
+                                        <th>{{ number_format($total_porcentaje_egreso_categoria_mes, 2) }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="row">
 
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Ingresos Corrientes</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingreso-corriente" height="300"></canvas>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Inversiones Tasa Fija Retorno</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingreso-tasa-fija" height="300"></canvas>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+            </div>
 
+            <div class="row">
 
-                                </tr>
-                            </tfoot>
-                        </table>
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Inversiones Retorno Fluctuante</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingreso-retorno" height="300"></canvas>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-12">
+                    <div class="card">
+                        <div class="card-header card-header-primary">
+                            <h4 class="card-title">Ingreso Total Anual</h4>
+                            <p class="card-category">{{ $mes_actual_text }}</p>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <canvas id="bar-ingreso-total" height="300"></canvas>
+                        </div>
+                        <div class="card-footer">
+                            <div class="stats">
+                                <i class="material-icons">access_time</i> Actualizado al {{ $fecha_actual }}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -596,8 +679,8 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 @endsection
 
 @push('js')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+    <script src="{{ asset('js/Chart.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/chartjs-plugin-labels.js') }}"></script>
 
     <script>
         const cDataIngresosEgresosMesLabels = JSON.parse(`<?php echo $data_ingresos_egresos_mes_labels; ?>`);
@@ -607,6 +690,13 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
         const cDataTotalIngresoProgramadoMes = JSON.parse(`<?php echo $data_total_ingreso_programado_mes; ?>`);
         const cDataTotalEgresoMes = JSON.parse(`<?php echo $data_total_egreso_mes; ?>`);
         const cDataTotalEgresoProgramadoMes = JSON.parse(`<?php echo $data_total_egreso_programado_mes; ?>`);
+
+        const cDataIngresoCorriente = JSON.parse(`<?php echo $data_ingreso_categoria_anual_corriente; ?>`);
+        const cDataIngresoProgramadoCorriente = JSON.parse(`<?php echo $data_ingreso_programado_categoria_anual_corriente; ?>`);
+        const cDataIngresoTasaFija = JSON.parse(`<?php echo $data_ingreso_categoria_anual_tasa_fija; ?>`);
+        const cDataIngresoProgramadoTasaFija = JSON.parse(`<?php echo $data_ingreso_programado_categoria_anual_tasa_fija; ?>`);
+        const cDataIngresoRetorno = JSON.parse(`<?php echo $data_ingreso_categoria_anual_retorno; ?>`);
+        const cDataIngresoProgramadoRetorno = JSON.parse(`<?php echo $data_ingreso_programado_categoria_anual_retorno; ?>`);
 
         $(document).ready(function() {
 
@@ -776,10 +866,350 @@ src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
                     }
                 }
             });
+
+            new Chart(document.getElementById('bar-ingreso-corriente'), {
+                type: 'bar',
+                data: {
+                    labels: ['ENE',
+                        'FEB',
+                        'MAR',
+                        'ABR',
+                        'MAY',
+                        'JUN',
+                        'JUL',
+                        'AGO',
+                        'SEP',
+                        'OCT',
+                        'NOV',
+                        'DIC',
+                    ],
+                    datasets: [{
+                            label: 'Ingreso Ejecutado',
+                            data: cDataIngresoCorriente,
+                            backgroundColor: [
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                            ]
+                        },
+                        {
+                            label: 'Ingreso Programado',
+                            data: cDataIngresoProgramadoCorriente,
+                            backgroundColor: [
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                            ]
+                        },
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: '',
+                        position: 'top',
+                        fontSize: 16,
+                        fontColor: '#111',
+                        padding: 20
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    tooltips: {
+                        enabled: true
+                    },
+                    plugins: {
+                        labels: {
+                            render: 'value'
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('bar-ingreso-tasa-fija'), {
+                type: 'bar',
+                data: {
+                    labels: ['ENE',
+                        'FEB',
+                        'MAR',
+                        'ABR',
+                        'MAY',
+                        'JUN',
+                        'JUL',
+                        'AGO',
+                        'SEP',
+                        'OCT',
+                        'NOV',
+                        'DIC',
+                    ],
+                    datasets: [{
+                            label: 'Ingreso Ejecutado',
+                            data: cDataIngresoTasaFija,
+                            backgroundColor: [
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                            ]
+                        },
+                        {
+                            label: 'Ingreso Programado',
+                            data: cDataIngresoProgramadoTasaFija,
+                            backgroundColor: [
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                            ]
+                        },
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: '',
+                        position: 'top',
+                        fontSize: 16,
+                        fontColor: '#111',
+                        padding: 20
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    tooltips: {
+                        enabled: true
+                    },
+                    plugins: {
+                        labels: {
+                            render: 'value'
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('bar-ingreso-retorno'), {
+                type: 'bar',
+                data: {
+                    labels: ['ENE',
+                        'FEB',
+                        'MAR',
+                        'ABR',
+                        'MAY',
+                        'JUN',
+                        'JUL',
+                        'AGO',
+                        'SEP',
+                        'OCT',
+                        'NOV',
+                        'DIC',
+                    ],
+                    datasets: [{
+                            label: 'Ingreso Ejecutado',
+                            data: cDataIngresoRetorno,
+                            backgroundColor: [
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                            ]
+                        },
+                        {
+                            label: 'Ingreso Programado',
+                            data: cDataIngresoProgramadoRetorno,
+                            backgroundColor: [
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                            ]
+                        },
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: '',
+                        position: 'top',
+                        fontSize: 16,
+                        fontColor: '#111',
+                        padding: 20
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    tooltips: {
+                        enabled: true
+                    },
+                    plugins: {
+                        labels: {
+                            render: 'value'
+                        }
+                    }
+                }
+            });
+
+            new Chart(document.getElementById('bar-ingreso-total'), {
+                type: 'bar',
+                data: {
+                    labels: ['ENE',
+                        'FEB',
+                        'MAR',
+                        'ABR',
+                        'MAY',
+                        'JUN',
+                        'JUL',
+                        'AGO',
+                        'SEP',
+                        'OCT',
+                        'NOV',
+                        'DIC',
+                    ],
+                    datasets: [{
+                            label: 'Ingreso Ejecutado',
+                            data: cDataTotalIngresoMes,
+                            backgroundColor: [
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                                '#FF6384',
+                            ]
+                        },
+                        {
+                            label: 'Ingreso Programado',
+                            data: cDataTotalIngresoProgramadoMes,
+                            backgroundColor: [
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                                '#36A2EB',
+                            ]
+                        },
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: '',
+                        position: 'top',
+                        fontSize: 16,
+                        fontColor: '#111',
+                        padding: 20
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            boxWidth: 20,
+                            fontColor: '#111',
+                            padding: 15
+                        }
+                    },
+                    tooltips: {
+                        enabled: true
+                    },
+                    plugins: {
+                        labels: {
+                            render: 'value'
+                        }
+                    }
+                }
+            });
         });
     </script>
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="{{ asset('js/loader.js') }}"></script>
     <script type="text/javascript">
         var cDataIngresosEgresosMesLabel = JSON.parse(`<?php echo $data_egreso_categoria_label; ?>`);
         var cDataIngresosEgresosMesData = JSON.parse(`<?php echo $data_egreso_categoria_data; ?>`);
