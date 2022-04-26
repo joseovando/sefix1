@@ -3101,7 +3101,7 @@ fieldset:disabled a.btn {
 
 .btn-link {
     font-weight: 400;
-    color: #9c27b0;
+    color: #ffffff;
     background-color: transparent
 }
 
@@ -9875,7 +9875,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 }
 
 .btn.btn-outline-primary {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: transparent;
     border-color: #9c27b0
 }
@@ -9883,7 +9883,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .btn.btn-outline-primary.focus,
 .btn.btn-outline-primary:focus,
 .btn.btn-outline-primary:hover {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 60%, .2);
     border-color: #9c27b0
 }
@@ -9892,7 +9892,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .btn.btn-outline-primary:active,
 .open>.btn.btn-outline-primary.dropdown-toggle,
 .show>.btn.btn-outline-primary.dropdown-toggle {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 60%, .2);
     border-color: #9c27b0;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)
@@ -9910,7 +9910,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .show>.btn.btn-outline-primary.dropdown-toggle.focus,
 .show>.btn.btn-outline-primary.dropdown-toggle:focus,
 .show>.btn.btn-outline-primary.dropdown-toggle:hover {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 60%, .4);
     border-color: #9c27b0
 }
@@ -9942,7 +9942,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .bg-inverse .btn.btn-outline-primary.focus,
 .bg-inverse .btn.btn-outline-primary:focus,
 .bg-inverse .btn.btn-outline-primary:hover {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 80%, .15);
     border-color: hsla(0, 0%, 80%, .15)
 }
@@ -9951,7 +9951,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .bg-inverse .btn.btn-outline-primary:active,
 .open>.bg-inverse .btn.btn-outline-primary.dropdown-toggle,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 80%, .15);
     border-color: hsla(0, 0%, 80%, .15);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12)
@@ -9969,7 +9969,7 @@ fieldset[disabled][disabled] .btn.btn-raised {
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle.focus,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle:focus,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle:hover {
-    color: #9c27b0;
+    color: #ffffff;
     background-color: hsla(0, 0%, 80%, .25);
     border-color: hsla(0, 0%, 80%, .25)
 }
@@ -11093,7 +11093,7 @@ form {
     padding-left: 0;
     padding-right: 0;
     border-radius: 0;
-    font-size: 14px
+    font-size: 12px
 }
 
 .bmd-form-group.is-focused .form-control,
@@ -11106,19 +11106,19 @@ form {
 .form-control::-moz-placeholder {
     color: #aaa;
     font-weight: 400;
-    font-size: 14px
+    font-size: 12px
 }
 
 .form-control:-ms-input-placeholder {
     color: #aaa;
     font-weight: 400;
-    font-size: 14px
+    font-size: 12px
 }
 
 .form-control::-webkit-input-placeholder {
     color: #aaa;
     font-weight: 400;
-    font-size: 14px
+    font-size: 12px
 }
 
 .has-white .form-control::-moz-placeholder {
@@ -12822,9 +12822,9 @@ select.form-control {
 }
 
 .form-group {
-    padding-bottom: 10px;
+    padding-bottom: 2px;
     position: relative;
-    margin: 8px 0 0
+    margin: 2px 0 0
 }
 
 .form-group .bmd-label-static {
@@ -14461,7 +14461,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .sidebar .nav p {
     margin: 0;
     line-height: 30px;
-    font-size: 14px;
+    font-size: 12px;
     position: relative;
     display: block;
     height: auto;
@@ -14956,7 +14956,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .fixed-plugin h5 {
-    font-size: 14px;
+    font-size: 12px;
     margin: 10px
 }
 
@@ -15912,7 +15912,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .table-shopping>tbody>tr>td {
-    font-size: 14px
+    font-size: 12px
 }
 
 .table-shopping>tbody>tr>td b {
@@ -16044,7 +16044,7 @@ a .material-icons {
 
 .form-check,
 label {
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.42857;
     color: #aaa;
     font-weight: 400
@@ -16968,7 +16968,7 @@ label {
 
 .card-stats .card-header .card-category:not([class*=text-]) {
     color: #999;
-    font-size: 14px
+    font-size: 12px
 }
 
 .card-stats .card-header+.card-footer {

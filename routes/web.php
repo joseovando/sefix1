@@ -86,11 +86,11 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('reportes/tablero', [ReporteController::class, 'tablero'])->name('reportes.tablero');
 	Route::get('reportes/{mes}/{ano}/{categoria}/subcategoria', [ReporteController::class, 'subcategoria'])->name('reportes.subcategoria');
 
-	Route::get('categorias/{id}/index', [CategoriaController::class, 'index'])->name('categorias.index');
-	Route::get('categorias/create', [CategoriaController::class, 'create'])->name('categorias.create');
-	Route::get('categorias/create_categoria', [CategoriaController::class, 'create_categoria'])->name('categorias.create_categoria');
-	Route::get('categorias/tablero', [CategoriaController::class, 'tablero'])->name('categorias.tablero');
-	Route::get('categorias/tablero_categoria', [CategoriaController::class, 'tablero_categoria'])->name('categorias.tablero_categoria');
+	Route::get('categorias/{id}/{comercial}/{search_result}/index', [CategoriaController::class, 'index'])->name('categorias.index');
+	Route::get('categorias/{comercial}/create', [CategoriaController::class, 'create'])->name('categorias.create');
+	Route::get('categorias/{comercial}/create_categoria', [CategoriaController::class, 'create_categoria'])->name('categorias.create_categoria');
+	Route::get('categorias/{comercial}/tablero', [CategoriaController::class, 'tablero'])->name('categorias.tablero');
+	Route::get('categorias/{comercial}/tablero_categoria', [CategoriaController::class, 'tablero_categoria'])->name('categorias.tablero_categoria');
 	Route::post('categorias/store', [CategoriaController::class, 'store'])->name('categorias.store');
 	Route::post('categorias/store_categoria', [CategoriaController::class, 'store_categoria'])->name('categorias.store_categoria');
 	Route::get('categorias/{id}/edit', [CategoriaController::class, 'edit'])->name('categorias.edit');
@@ -99,6 +99,10 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('categorias/update_categoria', [CategoriaController::class, 'update_categoria'])->name('categorias.update_categoria');
 	Route::get('categorias/{id}/delete', [CategoriaController::class, 'delete'])->name('categorias.delete');
 	Route::get('categorias/{id}/delete_categoria', [CategoriaController::class, 'delete_categoria'])->name('categorias.delete_categoria');
+	Route::post('categorias/search', [CategoriaController::class, 'search'])->name('categorias.search');
+	Route::post('categorias/store_favorita', [CategoriaController::class, 'store_favorita'])->name('categorias.store_favorita');
+	Route::get('categorias/{tipo}/{comercial}/getVistaCategoriaFavorita', 'App\Http\Controllers\CategoriaController@getVistaCategoriaFavorita')->name('categorias.getVistaCategoriaFavorita');
+	Route::post('categorias/store_ajax_categoria', [CategoriaController::class, 'store_ajax_categoria'])->name('categorias.store_ajax_categoria');
 
 	Route::get('presupuestosprogramados/index', [PresupuestoProgramadoController::class, 'index'])->name('presupuestosprogramados.index');
 	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/{estado}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');

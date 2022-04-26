@@ -125,207 +125,201 @@
 @section('content')
     <div class="content">
         <div class="container-fluid">
-
-            <div class="row">
-                @can('role_create')
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        + Nueva {{ $titulo }}
-                    </button>
-                @endcan
-            </div>
-
-            {{-- Cambiar Fecha --}}
-            <form method="get"
-                action="{{ route('cuentas.index', [
-                    'id' => $id,
-                    'mes' => $mes_actual,
-                    'ano' => $ano_actual,
-                ]) }}"
-                autocomplete="off" class="form-horizontal">
-
-                <div class="row">
-                    <div class="col-sm">
-                        <label for="exampleFormControlSelect1">Mes</label>
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="form-group">
-
-                            <select class="form-control" id="ano_actual" name="ano_actual">
-                                @for ($i = $ano_actual_inicio; $i <= $ano_actual_fin; $i++)
-                                    <option value="{{ $i }}" @if ($i == $ano_actual) selected @endif>
-                                        {{ $i }}
-                                    </option>
-                                @endfor
-                            </select>
-
-                        </div>
-                    </div>
-
-                    <div class="col-sm">
-                        <div class="form-group">
-
-                            <select class="form-control" id="mes_actual" name="mes_actual">
-                                @for ($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" @if ($i == $mes_actual) selected @endif>
-                                        {{ $meses[$i] }}
-                                    </option>
-                                @endfor
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-sm">
-                        <button type="submit" class="btn btn-primary">{{ __('Cambiar Mes') }}</button>
-                    </div>
-                    <div class="col-sm">
-                        <input type="hidden" name="llave_form" value="1">
-                    </div>
-                </div>
-
-            </form>
-            {{-- Cambiar Fecha --}}
-
-            <!-- Table -->
-            <div class="row">
-                <div class="col-lg-12 col-md-12">
-                    <div class="card">
-                        <div class="card-header card-header-primary">
-                            <h4 class="card-title">{{ $titulo }}</h4>
-                        </div>
-                        <div class="card-body table-responsive">
-
-                            <table id="tabla-cuentas" class="display data-table" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th>
-                                        <th>Detalle</th>
-                                        <th>Monto</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($vistaCuentas as $vistaCuenta)
-                                        <tr>
-                                            <td>{{ $vistaCuenta->fecha }}</td>
-                                            <td>{{ $vistaCuenta->detalle }}</td>
-                                            <td>{{ $vistaCuenta->monto }}</td>
-                                            <td width="1%">
-                                                <button class="btn btn-warning btn-fab btn-fab-mini" data-toggle="modal"
-                                                    data-target="#exampleModal"
-                                                    onclick="editarCuenta({{ $vistaCuenta->id }})">
-                                                    <i class="material-icons">edit</i>
-                                                </button>
-                                            </td>
-                                            <td width="1%">
-                                                <button class="btn btn-danger btn-fab btn-fab-mini"
-                                                    onclick="botonBorrar({{ $vistaCuenta->id }})">
-                                                    <i class="material-icons">close</i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="2">Total {{ $titulo }}</th>
-                                        <th>{{ $total }}</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-
-                        </div>
-                        <div class="card-footer">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- table -->
-
-            <!-- Modal Save -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Nueva {{ $titulo }}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <div class="alert alert-success alert-block" style="display: none;">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-                                <strong class="success-msg"></strong>
-                            </div>
-                        </div>
-                        <form>
-                            @csrf
-                            <div class="modal-body">
-
-                                <div class="col-sm">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlSelect1">Fecha</label>
-                                        <input id="date" width="276" name="date" required />
-                                        <input type="hidden" name="id_cuenta" id="id_cuenta">
-                                        <input type="hidden" name="tipo_cuenta" id="tipo_cuenta"
-                                            value="{{ $id }}">
-                                        <script>
-                                            $('#date').datepicker({
-                                                showOtherMonths: true,
-                                                locale: 'es-es',
-                                                format: 'yyyy-mm-dd',
-                                                weekStartDay: 1
-                                            });
-                                        </script>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Detalle</label>
-                                        <textarea class="form-control" name="detalle" id="detalle" rows="2" required></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm">
-
-                                    @if ($navegador_mobile == 1)
-                                        <div class="form-group{{ $errors->has('monto') ? ' has-danger' : '' }}">
-                                            <label for="exampleFormControlTextarea1">Monto</label>
-                                            <input class="form-control{{ $errors->has('monto') ? ' is-invalid' : '' }}"
-                                                name=monto" id="monto" type="number" style="font-family: FontAwesome"
-                                                placeholder="&#xf0d6; Monto" value="" required />
-                                            <span id="result"></span>
-                                        </div>
-                                    @else
-                                        <div class="form-group{{ $errors->has('monto') ? ' has-danger' : '' }}">
-                                            <label for="exampleFormControlTextarea1">Monto</label>
-                                            <input class="form-control{{ $errors->has('monto') ? ' is-invalid' : '' }}"
-                                                name=monto" id="monto" type="text" style="font-family: FontAwesome"
-                                                placeholder="&#xf0d6; Monto" value=""
-                                                onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
-                                                required />
-                                            <span id="result"></span>
-                                        </div>
-                                    @endif
-
-
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary btn-submit"
-                                        id="guardarCuenta">Guardar</button>
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- Modal Save -->
-
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                + Nueva {{ $titulo }}
+            </button>
         </div>
+
+        {{-- Cambiar Fecha --}}
+        <form method="get"
+            action="{{ route('cuentas.index', [
+                'id' => $id,
+                'mes' => $mes_actual,
+                'ano' => $ano_actual,
+            ]) }}"
+            autocomplete="off" class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm">
+                    <label for="exampleFormControlSelect1">Mes</label>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+
+                        <select class="form-control" id="ano_actual" name="ano_actual">
+                            @for ($i = $ano_actual_inicio; $i <= $ano_actual_fin; $i++)
+                                <option value="{{ $i }}" @if ($i == $ano_actual) selected @endif>
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="col-sm">
+                    <div class="form-group">
+
+                        <select class="form-control" id="mes_actual" name="mes_actual">
+                            @for ($i = 1; $i <= 12; $i++)
+                                <option value="{{ $i }}" @if ($i == $mes_actual) selected @endif>
+                                    {{ $meses[$i] }}
+                                </option>
+                            @endfor
+                        </select>
+
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <button type="submit" class="btn btn-primary">{{ __('Cambiar Mes') }}</button>
+                </div>
+                <div class="col-sm">
+                    <input type="hidden" name="llave_form" value="1">
+                </div>
+            </div>
+
+        </form>
+        {{-- Cambiar Fecha --}}
+
+        <!-- Table -->
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-primary">
+                        <h4 class="card-title">{{ $titulo }}</h4>
+                    </div>
+                    <div class="card-body table-responsive">
+
+                        <table id="tabla-cuentas" class="display data-table" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Detalle</th>
+                                    <th>Monto</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($vistaCuentas as $vistaCuenta)
+                                    <tr>
+                                        <td>{{ $vistaCuenta->fecha }}</td>
+                                        <td>{{ $vistaCuenta->detalle }}</td>
+                                        <td>{{ $vistaCuenta->monto }}</td>
+                                        <td width="1%">
+                                            <button class="btn btn-warning btn-fab btn-fab-mini" data-toggle="modal"
+                                                data-target="#exampleModal"
+                                                onclick="editarCuenta({{ $vistaCuenta->id }})">
+                                                <i class="material-icons">edit</i>
+                                            </button>
+                                        </td>
+                                        <td width="1%">
+                                            <button class="btn btn-danger btn-fab btn-fab-mini"
+                                                onclick="botonBorrar({{ $vistaCuenta->id }})">
+                                                <i class="material-icons">close</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="2">Total {{ $titulo }}</th>
+                                    <th>{{ $total }}</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- table -->
+
+        <!-- Modal Save -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Nueva {{ $titulo }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div class="alert alert-success alert-block" style="display: none;">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            <strong class="success-msg"></strong>
+                        </div>
+                    </div>
+                    <form>
+                        @csrf
+                        <div class="modal-body">
+
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Fecha</label>
+                                    <input id="date" width="276" name="date" required />
+                                    <input type="hidden" name="id_cuenta" id="id_cuenta">
+                                    <input type="hidden" name="tipo_cuenta" id="tipo_cuenta" value="{{ $id }}">
+                                    <script>
+                                        $('#date').datepicker({
+                                            showOtherMonths: true,
+                                            locale: 'es-es',
+                                            format: 'yyyy-mm-dd',
+                                            weekStartDay: 1
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+
+                            <div class="col-sm">
+                                <div class="form-group">
+                                    <label for="exampleFormControlTextarea1">Detalle</label>
+                                    <textarea class="form-control" name="detalle" id="detalle" rows="2" required></textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-sm">
+
+                                @if ($navegador_mobile == 1)
+                                    <div class="form-group{{ $errors->has('monto') ? ' has-danger' : '' }}">
+                                        <label for="exampleFormControlTextarea1">Monto</label>
+                                        <input class="form-control{{ $errors->has('monto') ? ' is-invalid' : '' }}"
+                                            name=monto" id="monto" type="number" style="font-family: FontAwesome"
+                                            placeholder="&#xf0d6; Monto" value="" required />
+                                        <span id="result"></span>
+                                    </div>
+                                @else
+                                    <div class="form-group{{ $errors->has('monto') ? ' has-danger' : '' }}">
+                                        <label for="exampleFormControlTextarea1">Monto</label>
+                                        <input class="form-control{{ $errors->has('monto') ? ' is-invalid' : '' }}"
+                                            name=monto" id="monto" type="text" style="font-family: FontAwesome"
+                                            placeholder="&#xf0d6; Monto" value=""
+                                            onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"
+                                            required />
+                                        <span id="result"></span>
+                                    </div>
+                                @endif
+
+
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary btn-submit" id="guardarCuenta">Guardar</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Save -->
+
+    </div>
     </div>
 @endsection
 @push('js')

@@ -35,6 +35,7 @@
                                 @endif
 
                                 <div class="row">
+                                    <div class="col-sm-1"></div>
                                     <div class="col-sm">
                                         <div class="form-group">
 
@@ -76,6 +77,8 @@
                                             </select>
                                         </div>
                                     </div>
+
+                                    <div class="col-sm-1"></div>
 
                                     <div class="col-sm">
                                         <label for="exampleFormControlSelect1">Subcategoria</label>

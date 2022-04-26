@@ -26,7 +26,7 @@
         <div class="container-fluid">
 
             <div class="row">
-                <a class="btn btn-primary" href="{{ route('categorias.create') }}" role="button">
+                <a class="btn btn-primary" href="{{ route('categorias.create', $comercial) }}" role="button">
                     + Nueva Subcategoria
                 </a>
             </div>

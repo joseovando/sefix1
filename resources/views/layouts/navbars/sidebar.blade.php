@@ -1,3 +1,134 @@
+<style>
+    .margin {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked+.slider {
+        background-color: #2196F3;
+    }
+
+    input:focus+.slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked+.slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+</style>
+
+<script type="text/javascript">
+    window.onload = function() {
+        var base_path = '{{ url('/') }}';
+        var llaveswitch = localStorage.getItem("htmlswitch");
+
+        if (llaveswitch == "checked") {
+            var comercial = 1;
+            $("#switch").prop('checked', true);
+            var htmlSwitch = "<h4>&nbsp;&nbsp;Cuenta Comercial</h4>";
+            $('#label_switch').html(htmlSwitch);
+        } else {
+            var comercial = 0;
+            $("#switch").prop('checked', false);
+            var htmlSwitch = "<h4>&nbsp;&nbsp;Cuenta Personal</h4>";
+            $('#label_switch').html(htmlSwitch);
+        }
+
+        var href_ingreso_programado = base_path + "/categorias/1/" + comercial + "/0/index";
+        $("#ingreso_programado").prop('href', href_ingreso_programado);
+        var href_ingreso_ejecutado = base_path + "/categorias/2/" + comercial + "/0/index";
+        $("#ingreso_ejecutado").prop('href', href_ingreso_ejecutado);
+        var href_egreso_programado = base_path + "/categorias/3/" + comercial + "/0/index";
+        $("#egreso_programado").prop('href', href_egreso_programado);
+        var href_egreso_ejecutado = base_path + "/categorias/4/" + comercial + "/0/index";
+        $("#egreso_ejecutado").prop('href', href_egreso_ejecutado);
+
+        var href_categoria_tablero_categoria = base_path + "/categorias/" + comercial + "/tablero_categoria";
+        $("#categoria_tablero_categoria").prop('href', href_categoria_tablero_categoria);
+        var href_categoria_tablero = base_path + "/categorias/" + comercial + "/tablero";
+        $("#categoria_tablero").prop('href', href_categoria_tablero);
+    }
+
+    function handleOnClick() {
+        var base_path = '{{ url('/') }}';
+
+        if ($("#switch").prop('checked')) {
+            var comercial = 1;
+            var htmlSwitch = "<h4>Cuenta Comercial</h4>";
+            localStorage.setItem("htmlswitch", "checked");
+            $('#label_switch').html(htmlSwitch);
+        } else {
+            var comercial = 0;
+            var htmlSwitch = "<h4>Cuenta Personal</h4>";
+            localStorage.setItem("htmlswitch", "unchecked");
+            $('#label_switch').html(htmlSwitch);
+        }
+
+        var href_ingreso_programado = base_path + "/categorias/1/" + comercial + "/0/index";
+        $("#ingreso_programado").prop('href', href_ingreso_programado);
+        var href_ingreso_ejecutado = base_path + "/categorias/2/" + comercial + "/0/index";
+        $("#ingreso_ejecutado").prop('href', href_ingreso_ejecutado);
+        var href_egreso_programado = base_path + "/categorias/3/" + comercial + "/0/index";
+        $("#egreso_programado").prop('href', href_egreso_programado);
+        var href_egreso_ejecutado = base_path + "/categorias/4/" + comercial + "/0/index";
+        $("#egreso_ejecutado").prop('href', href_egreso_ejecutado);
+
+        var href_categoria_tablero_categoria = base_path + "/categorias/" + comercial + "/tablero_categoria";
+        $("#categoria_tablero_categoria").prop('href', href_categoria_tablero_categoria);
+        var href_categoria_tablero = base_path + "/categorias/" + comercial + "/tablero";
+        $("#categoria_tablero").prop('href', href_categoria_tablero);
+    }
+</script>
+
 <div class="sidebar" data-color="orange" data-background-color="white"
     data-image="{{ asset('material') }}/img/sidebar-1.jpg">
     <!--
@@ -13,10 +144,27 @@
             </a>
             <img src="{{ asset('img/sefix_logo.png') }}" width="90%">
         </div>
+        <br>
     @endif
 
     <div class="sidebar-wrapper">
+
+        <div class="row margin">
+            <div class="col-xs-4">
+                <label class="switch">
+                    <input type="checkbox" id="switch" onclick="handleOnClick()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="col-xs-8">
+                <div id="label_switch">
+                    <h4>&nbsp;&nbsp;Cuenta Personal</h4>
+                </div>
+            </div>
+        </div>
+
         <ul class="nav">
+
             <li class="nav-item{{ $activePage == 'dashboard' ? ' active' : '' }}">
                 <a class="nav-link" href="{{ route('home') }}">
                     <i class="material-icons">dashboard</i>
@@ -35,13 +183,13 @@
                 <div class="collapse" id="ingresos">
                     <ul class="nav">
                         <li class="nav-item{{ $activePage == 'iprogramado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.index', 1) }}">
+                            <a class="nav-link" id="ingreso_programado" href="">
                                 <i class="material-icons">developer_board</i>
                                 <span class="sidebar-normal">{{ __('Programado') }} </span>
                             </a>
                         </li>
                         <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.index', 2) }}">
+                            <a class="nav-link" id="ingreso_ejecutado" href="">
                                 <i class="material-icons">domain</i>
                                 <span class="sidebar-normal">{{ __('Ejecutado') }} </span>
                             </a>
@@ -61,13 +209,13 @@
                 <div class="collapse" id="egreso">
                     <ul class="nav">
                         <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.index', 3) }}">
+                            <a class="nav-link" id="egreso_programado" href="">
                                 <i class="material-icons">developer_board</i>
                                 <span class="sidebar-normal">{{ __('Programado') }} </span>
                             </a>
                         </li>
                         <li class="nav-item{{ $activePage == 'iejecutado' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.index', 4) }}">
+                            <a class="nav-link" id="egreso_ejecutado" href="">
                                 <i class="material-icons">domain</i>
                                 <span class="sidebar-normal">{{ __('Ejecutado') }} </span>
                             </a>
@@ -134,13 +282,13 @@
                 <div class="collapse" id="categorias">
                     <ul class="nav">
                         <li class="nav-item{{ $activePage == 'categoria' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.tablero_categoria') }}">
+                            <a class="nav-link" id="categoria_tablero_categoria" href="">
                                 <i class="material-icons">mode_comment</i>
                                 <span class="sidebar-normal">{{ __('Categorias') }} </span>
                             </a>
                         </li>
                         <li class="nav-item{{ $activePage == 'subcategoria' ? ' active' : '' }}">
-                            <a class="nav-link" href="{{ route('categorias.tablero') }}">
+                            <a class="nav-link" id="categoria_tablero" href="">
                                 <i class="material-icons">question_answer</i>
                                 <span class="sidebar-normal">{{ __('Subcategorias') }} </span>
                             </a>
@@ -201,35 +349,6 @@
                 </div>
             </li>
 
-            {{-- Graficas --}}
-            {{-- <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
-                <a class="nav-link" href="{{ route('charts.ejemplo') }}">
-                    <i class="material-icons">apps</i>
-                    <p>{{ __('Gasto Vivienda') }}</p>
-                </a>
-            </li>
-
-            <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
-                <a class="nav-link" href="{{ route('charts.ejemplo_pie') }}">
-                    <i class="material-icons">apps</i>
-                    <p>{{ __('Seguimiento Gastos') }}</p>
-                </a>
-            </li>
-
-            <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
-                <a class="nav-link" href="{{ route('charts.ejemplo_group_bar') }}">
-                    <i class="material-icons">apps</i>
-                    <p>{{ __('Pasajes Programado Ejecutado') }}</p>
-                </a>
-            </li>
-
-            <li class="nav-item{{ $activePage == 'graficas' ? ' active' : '' }}">
-                <a class="nav-link" href="{{ route('charts.gasto_categoria') }}">
-                    <i class="material-icons">apps</i>
-                    <p>{{ __('Gasto por Categoria') }}</p>
-                </a>
-            </li> --}}
-
             {{-- Users --}}
             @can('user_index')
                 <li class="nav-item {{ $activePage == 'profile' || $activePage == 'user-management' ? ' active' : '' }}">
@@ -242,12 +361,6 @@
 
                     <div class="collapse" id="laravelExample">
                         <ul class="nav">
-                            {{-- <li class="nav-item{{ $activePage == 'Perfil' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('profile.edit') }}">
-                                    <span class="sidebar-mini"> UP </span>
-                                    <span class="sidebar-normal">{{ __('Perfil') }} </span>
-                                </a>
-                            </li> --}}
                             <li class="nav-item{{ $activePage == 'Usuarios' ? ' active' : '' }}">
                                 <a class="nav-link" href="{{ route('users.index') }}">
                                     <span class="sidebar-mini"> UM </span>
@@ -270,43 +383,6 @@
                                     </a>
                                 </li>
                             @endcan
-
-                            {{-- <li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('table') }}">
-                                    <i class="material-icons">content_paste</i>
-                                    <p>{{ __('Table List') }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item{{ $activePage == 'typography' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('typography') }}">
-                                    <i class="material-icons">library_books</i>
-                                    <p>{{ __('Typography') }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item{{ $activePage == 'icons' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('icons') }}">
-                                    <i class="material-icons">bubble_chart</i>
-                                    <p>{{ __('Icons') }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item{{ $activePage == 'map' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('map') }}">
-                                    <i class="material-icons">location_ons</i>
-                                    <p>{{ __('Maps') }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item{{ $activePage == 'notifications' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('notifications') }}">
-                                    <i class="material-icons">notifications</i>
-                                    <p>{{ __('Notifications') }}</p>
-                                </a>
-                            </li>
-                            <li class="nav-item{{ $activePage == 'language' ? ' active' : '' }}">
-                                <a class="nav-link" href="{{ route('language') }}">
-                                    <i class="material-icons">language</i>
-                                    <p>{{ __('RTL Support') }}</p>
-                                </a>
-                            </li> --}}
                         </ul>
                     </div>
                 @endcan

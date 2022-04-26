@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property string $updated_at
  * @property int $tipo
+ * @property int $comercial
  */
 class Categoria extends Model
 {
@@ -30,5 +31,5 @@ class Categoria extends Model
     /**
      * @var array
      */
-    protected $fillable = ['categoria', 'id_padre', 'orden', 'icono', 'fondo', 'plantilla', 'estado', 'id_user', 'created_at', 'updated_at', 'tipo'];
+    protected $fillable = ['categoria', 'id_padre', 'orden', 'icono', 'fondo', 'plantilla', 'estado', 'id_user', 'created_at', 'updated_at', 'tipo', 'comercial'];
 }

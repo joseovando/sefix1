@@ -159,7 +159,7 @@ sup {
 }
 
 a {
-  color: #9c27b0;
+  color: #ffffff;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
@@ -563,7 +563,7 @@ sup {
 }
 
 a {
-  color: #9c27b0;
+  color: #ffffff;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects;
@@ -3291,7 +3291,7 @@ fieldset:disabled a.btn {
 
 .btn-link {
   font-weight: 400;
-  color: #9c27b0;
+  color: #ffffff;
   background-color: transparent;
 }
 
@@ -8865,7 +8865,7 @@ a.text-dark:focus {
 
 .btn.btn-primary.btn-link {
   background-color: transparent;
-  color: #9c27b0;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -8873,7 +8873,7 @@ a.text-dark:focus {
 .btn.btn-primary.btn-link:focus,
 .btn.btn-primary.btn-link:active {
   background-color: transparent;
-  color: #9c27b0;
+  color: #ffffff;
 }
 
 .btn.btn-secondary {
@@ -9748,13 +9748,13 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 }
 
 .btn.btn-outline-primary {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: transparent;
   border-color: #9c27b0;
 }
 
 .btn.btn-outline-primary:hover {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(153, 153, 153, 0.2);
   border-color: #9c27b0;
 }
@@ -9762,7 +9762,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .btn.btn-outline-primary:focus,
 .btn.btn-outline-primary.focus,
 .btn.btn-outline-primary:hover {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(153, 153, 153, 0.2);
   border-color: #9c27b0;
 }
@@ -9771,7 +9771,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .btn.btn-outline-primary.active,
 .open>.btn.btn-outline-primary.dropdown-toggle,
 .show>.btn.btn-outline-primary.dropdown-toggle {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(153, 153, 153, 0.2);
   border-color: #9c27b0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -9789,7 +9789,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .show>.btn.btn-outline-primary.dropdown-toggle:hover,
 .show>.btn.btn-outline-primary.dropdown-toggle:focus,
 .show>.btn.btn-outline-primary.dropdown-toggle.focus {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(153, 153, 153, 0.4);
   border-color: #9c27b0;
 }
@@ -9818,13 +9818,13 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 }
 
 .bg-inverse .btn.btn-outline-primary {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: transparent;
   border-color: #9c27b0;
 }
 
 .bg-inverse .btn.btn-outline-primary:hover {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(204, 204, 204, 0.15);
   border-color: rgba(204, 204, 204, 0.15);
 }
@@ -9832,7 +9832,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .bg-inverse .btn.btn-outline-primary:focus,
 .bg-inverse .btn.btn-outline-primary.focus,
 .bg-inverse .btn.btn-outline-primary:hover {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(204, 204, 204, 0.15);
   border-color: rgba(204, 204, 204, 0.15);
 }
@@ -9841,7 +9841,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .bg-inverse .btn.btn-outline-primary.active,
 .open>.bg-inverse .btn.btn-outline-primary.dropdown-toggle,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(204, 204, 204, 0.15);
   border-color: rgba(204, 204, 204, 0.15);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -9859,7 +9859,7 @@ fieldset[disabled][disabled] .btn-group-raised .btn,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle:hover,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle:focus,
 .show>.bg-inverse .btn.btn-outline-primary.dropdown-toggle.focus {
-  color: #9c27b0;
+  color: #ffffff;
   background-color: rgba(204, 204, 204, 0.25);
   border-color: rgba(204, 204, 204, 0.25);
 }
@@ -11185,7 +11185,7 @@ form {
   padding-left: 0;
   padding-right: 0;
   border-radius: 0;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .form-control:focus,
@@ -11198,19 +11198,19 @@ form {
 .form-control::-moz-placeholder {
   color: #AAAAAA;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .form-control:-ms-input-placeholder {
   color: #AAAAAA;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .form-control::-webkit-input-placeholder {
   color: #AAAAAA;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .has-white .form-control::-moz-placeholder {
@@ -11505,7 +11505,7 @@ fieldset[disabled][disabled] .form-control,
 
 .is-focused [class^='bmd-label'],
 .is-focused [class*=' bmd-label'] {
-  color: #9c27b0;
+  color: #ffffff;
 }
 
 .is-focused .bmd-label-placeholder {
@@ -12935,9 +12935,9 @@ select.form-control {
 }
 
 .form-group {
-  padding-bottom: 10px;
+  padding-bottom: 2px;
   position: relative;
-  margin: 8px 0 0;
+  margin: 2px 0 0;
 }
 
 .form-group .bmd-label-static {
@@ -13516,7 +13516,7 @@ fieldset[disabled] .form-group .form-control {
 }
 
 .alert.alert-primary i {
-  color: #9c27b0;
+  color: #ffffff;
 }
 
 .alert.alert-rose {
@@ -14630,7 +14630,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .sidebar .nav p {
   margin: 0;
   line-height: 30px;
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
   display: block;
   height: auto;
@@ -15143,7 +15143,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .fixed-plugin h5 {
-  font-size: 14px;
+  font-size: 12px;
   margin: 10px;
 }
 
@@ -15259,7 +15259,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 
 .fixed-plugin .btn.btn-primary.btn-link {
   background-color: transparent;
-  color: #9c27b0;
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -15267,7 +15267,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 .fixed-plugin .btn.btn-primary.btn-link:focus,
 .fixed-plugin .btn.btn-primary.btn-link:active {
   background-color: transparent;
-  color: #9c27b0;
+  color: #ffffff;
 }
 
 .fixed-plugin .btn.btn-secondary {
@@ -16197,7 +16197,7 @@ fieldset[disabled] .form-group.is-focused .togglebutton label {
 }
 
 .table-shopping>tbody>tr>td {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .table-shopping>tbody>tr>td b {
@@ -16309,7 +16309,7 @@ legend {
 }
 
 a {
-  color: #9c27b0;
+  color: #ffffff;
 }
 
 a:hover,
@@ -16329,7 +16329,7 @@ a .material-icons {
 
 .form-check,
 label {
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.42857;
   color: #AAAAAA;
   font-weight: 400;
@@ -16968,7 +16968,7 @@ label {
 }
 
 .card .card-body {
-  padding: 0.9375rem 2px;
+  /* padding: 0.9375rem 2px; */
   position: relative;
 }
 
@@ -17308,7 +17308,7 @@ label {
 
 .card-stats .card-header .card-category:not([class*="text-"]) {
   color: #999999;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .card-stats .card-header+.card-footer {

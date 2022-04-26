@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Categoria;
+use App\Models\CategoriaFavorita;
 use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
@@ -13,7 +14,7 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index($id, $comercial, $search_result)
     {
         switch ($id) {
             case 1:
@@ -39,44 +40,158 @@ class CategoriaController extends Controller
         $vistaCategoriaPadres = DB::table('vista_categoria_padres')
             ->where('tipo', '=', $tipo)
             ->where('estado', '=', 1)
+            ->where('comercial', '=', $comercial)
+            ->orderBy('categoria', 'ASC')
+            ->get();
+
+        $vistaCategoriaFavoritas = DB::table('vista_categoria_favoritas')
+            ->where('tipo', '=', $tipo)
+            ->where('estado', '=', 1)
+            ->where('comercial', '=', $comercial)
+            ->where('id_user', '=', auth()->id())
             ->orderBy('orden', 'ASC')
             ->get();
 
-        $estado = 0;
+        $categoriaTipos = DB::table('categoria_tipo')
+            ->where('estado', '=', 1)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $categoriaLogos = DB::table('categoria_logo')
+            ->where('estado', '=', 1)
+            ->orderBy('label', 'ASC')
+            ->get();
+
+        include('IncludeCategoria/CategoriasFavoritasPlatillaInclude.php');
+        include('IncludeCategoria/BuscadorCategoriasInclude.php');
+        include('IncludeCategoria/ArrayCategoriasFavoritasInclude.php');
 
         return view('categorias.index', compact(
-            'vistaCategoriaPadres',
+            'vistaCategoriaFavoritas',
+            'arrayIdCategoria',
+            'arrayCategoria',
+            'arrayCheckCategoria',
+            'categoriaTipos',
+            'categoriaLogos',
+            'json',
             'menu',
+            'tipo',
             'ano_actual',
             'mes_actual',
             'fecha_actual',
-            'estado'
+            'estado',
+            'comercial',
+            'search_result'
         ));
     }
 
-    public function tablero()
+    public function search(Request $request)
+    {
+        $menu = request('menu');
+        $ano_actual = request('ano_actual');
+        $mes_actual = request('mes_actual');
+        $estado = request('estado');
+        $fecha_actual = request('fecha_actual');
+        $comercial = request('comercial');
+        $search =  request('search');
+        $entrada = explode(' | ', $search);
+
+        include('IncludeCategoria/SearchVerificadorInputInclude.php');
+
+        if (!isset($vistaCategoria)) {
+            $search_result = 1;
+
+            return redirect()->route('categorias.index', [
+                'id' => $menu,
+                'comercial' => $comercial,
+                'search_result' => $search_result,
+            ]);
+        } else {
+            switch ($menu) {
+                case 1:
+                    return redirect()->route('presupuestosprogramados.create', [
+                        'id' => $vistaCategoria->id_padre,
+                        'menu' => $menu,
+                        'ano' => $ano_actual,
+                        'mes' => $mes_actual,
+                        'estado' => $estado,
+                    ]);
+                    break;
+                case 2:
+                    return redirect()->route('presupuestosejecutados.create', [
+                        'id' => $vistaCategoria->id_padre,
+                        'menu' => $menu,
+                        'date' => $fecha_actual,
+                        'estado' => $estado,
+                    ]);
+                    break;
+                case 3:
+                    return redirect()->route('presupuestosprogramados.create', [
+                        'id' => $vistaCategoria->id_padre,
+                        'menu' => $menu,
+                        'ano' => $ano_actual,
+                        'mes' => $mes_actual,
+                        'estado' => $estado,
+                    ]);
+                    break;
+                case 4:
+                    return redirect()->route('presupuestosejecutados.create', [
+                        'id' => $vistaCategoria->id_padre,
+                        'menu' => $menu,
+                        'date' => $fecha_actual,
+                        'estado' => $estado,
+                    ]);
+                    break;
+            }
+        }
+    }
+
+    public function getVistaCategoriaFavorita($tipo, $comercial)
+    {
+        $vistaCategoriaFavoritas = DB::table('vista_categoria_favoritas')
+            ->where('tipo', '=', $tipo)
+            ->where('estado', '=', 1)
+            ->where('comercial', '=', $comercial)
+            ->where('id_user', '=', auth()->id())
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        return response()->json([
+            'vistaCategoriaFavoritas' => $vistaCategoriaFavoritas,
+        ], 200);
+    }
+
+    public function tablero($comercial)
     {
         $vistaCategorias = DB::table('vista_categorias')
             ->where('estado', '=', 1)
+            ->where('comercial', '=', $comercial)
             ->where('id_user', '=', auth()->id())
             ->orderBy('tipo_orden', 'ASC')
             ->orderBy('orden_padre', 'ASC')
             ->orderBy('orden', 'ASC')
             ->get();
 
-        return view('categorias.tablero', compact('vistaCategorias'));
+        return view('categorias.tablero', compact(
+            'vistaCategorias',
+            'comercial'
+        ));
     }
 
-    public function tablero_categoria()
+    public function tablero_categoria($comercial)
     {
         $vistaCategoriaPadres = DB::table('vista_categoria_padres')
             ->where('estado', '=', 1)
+            ->where('comercial', '=', $comercial)
             ->where('id_user', '=', auth()->id())
             ->orderBy('orden_tipo', 'ASC')
             ->orderBy('orden', 'ASC')
             ->get();
 
-        return view('categorias.tablero_categoria', compact('vistaCategoriaPadres'));
+        return view('categorias.tablero_categoria', compact(
+            'vistaCategoriaPadres',
+            'comercial'
+        ));
     }
 
     /**
@@ -84,27 +199,30 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($comercial)
     {
         $vistaCategoriaIngresos = DB::table('vista_categoria_padres')
             ->where('estado', '=', 1)
             ->where('tipo', '=', 1)
+            ->where('comercial', '=', $comercial)
             ->orderBy('orden', 'ASC')
             ->get();
 
         $vistaCategoriaEgresos = DB::table('vista_categoria_padres')
             ->where('estado', '=', 1)
             ->where('tipo', '=', 2)
+            ->where('comercial', '=', $comercial)
             ->orderBy('orden', 'ASC')
             ->get();
 
         return view('categorias.create', compact(
             'vistaCategoriaIngresos',
-            'vistaCategoriaEgresos'
+            'vistaCategoriaEgresos',
+            'comercial'
         ));
     }
 
-    public function create_categoria()
+    public function create_categoria($comercial)
     {
         $categoriaTipos = DB::table('categoria_tipo')
             ->where('estado', '=', 1)
@@ -118,7 +236,8 @@ class CategoriaController extends Controller
 
         return view('categorias.create_categoria', compact(
             'categoriaTipos',
-            'categoriaLogos'
+            'categoriaLogos',
+            'comercial'
         ));
     }
 
@@ -160,42 +279,41 @@ class CategoriaController extends Controller
         $categoria->tipo = $vistaCategoriaPadres->tipo;
         $categoria->save();
 
-        return redirect()->route('categorias.tablero');
+        return redirect()->route('categorias.tablero', request('comercial'));
     }
 
     public function store_categoria(Request $request)
     {
-        $vistaUserRol = DB::table('vista_user_rol')
-            ->where('user_id', '=', auth()->id())
-            ->first();
+        include('IncludeCategoria/StoreCategoriaInclude.php');
+        return redirect()->route('categorias.tablero_categoria', request('comercial'));
+    }
 
-        if ($vistaUserRol->rol_name == "administrator") {
-            $plantilla = 1;
-        } else {
-            $plantilla = 0;
-        }
+    public function store_ajax_categoria(Request $request)
+    {
+        include('IncludeCategoria/StoreCategoriaInclude.php');
 
-        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
-            ->where('orden_tipo', '=', request('tipo_categoria'))
-            ->orderBy('orden', 'DESC')
-            ->first();
+        $favorita = new CategoriaFavorita();
+        $favorita->id_categoria = $categoria->id;
+        $favorita->orden =  0;
+        $favorita->plantilla =  0;
+        $favorita->estado = 1;
+        $favorita->id_user = auth()->id();
+        $favorita->save();
 
-        $orden = $vistaCategoriaPadres->orden;
-        $orden = $orden + 1;
+        return response()->json(['success' => 'Registro Guardado Correctamente.']);
+    }
 
-        $categoria = new Categoria();
-        $categoria->categoria = request('categoria');
-        $categoria->id_padre =  0;
-        $categoria->orden =  $orden;
-        $categoria->icono =  request('logo_categoria');
-        $categoria->fondo =  request('fondo_categoria');
-        $categoria->plantilla =  $plantilla;
-        $categoria->estado = 1;
-        $categoria->id_user = auth()->id();
-        $categoria->tipo =  request('tipo_categoria');
-        $categoria->save();
+    public function store_favorita(Request $request)
+    {
+        $arrayIdCategoria = request('arrayIdCategoria');
+        $arrayCheck = request('arrayCheck');
+        $sortable = request('sortable');
+        $entrada = explode('|', $sortable);
+        $orden = 0;
 
-        return redirect()->route('categorias.tablero_categoria');
+        include('IncludeCategoria/StoreFavoritaCrudInclude.php');
+
+        return response()->json(['success' => 'Sortable Guardado Correctamente, Información Actualizada']);
     }
 
     /**
@@ -276,7 +394,6 @@ class CategoriaController extends Controller
      */
     public function update(Request $request)
     {
-
         $vistaUserRol = DB::table('vista_user_rol')
             ->where('user_id', '=', auth()->id())
             ->first();

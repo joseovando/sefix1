@@ -1,8 +1,8 @@
 @extends('layouts.app', ['activePage' => 'categorias', 'titlePage' => __('Nueva Categoria')])
 @section('content')
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
+    {{-- <script src="{{ asset('js/jquery.min.js') }}"></script>
     <script src="{{ asset('js/bootstrap-select.min.js') }}"></script>
-    <script src="{{ asset('js/defaults-es_ES.js') }}"></script>
+    <script src="{{ asset('js/defaults-es_ES.js') }}"></script> --}}
     <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
 
     <div class="content">
@@ -36,6 +36,7 @@
 
                                 <div class="row">
 
+                                    <div class="col-sm-1"></div>
                                     <div class="col-sm">
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Tipo de Categoria</label>
@@ -48,27 +49,31 @@
                                                     </option>
                                                 @endforeach
                                             </select>
+                                            <input type="hidden" name="comercial" value="{{ $comercial }}">
                                         </div>
                                     </div>
 
                                     <div class="col-sm">
                                         <label for="exampleFormControlSelect1">Nombre Categoria</label>
-                                        <div class="col-sm-7">
-                                            <div class="form-group{{ $errors->has('categoria') ? ' has-danger' : '' }}">
-                                                <input
-                                                    class="form-control{{ $errors->has('categoria') ? ' is-invalid' : '' }}"
-                                                    name="categoria" id="categoria" type="text"
-                                                    placeholder="{{ __('Categoria') }}"
-                                                    value="{{ old('categoria', auth()->user()->categoria) }}" required />
-                                                @if ($errors->has('categoria'))
-                                                @endif
-                                            </div>
+
+                                        <div class="form-group{{ $errors->has('categoria') ? ' has-danger' : '' }}">
+                                            <input
+                                                class="form-control{{ $errors->has('categoria') ? ' is-invalid' : '' }}"
+                                                name="categoria" id="categoria" type="text"
+                                                placeholder="{{ __('Categoria') }}"
+                                                value="{{ old('categoria', auth()->user()->categoria) }}" required />
+                                            @if ($errors->has('categoria'))
+                                            @endif
                                         </div>
+
                                     </div>
+                                    <div class="col-sm-1"></div>
 
                                 </div>
 
                                 <div class="row">
+
+                                    <div class="col-sm-1"></div>
                                     <div class="col-sm">
                                         <div class="form-group">
                                             <label for="exampleFormControlSelect1">Logo Categoria</label>
@@ -102,6 +107,7 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-sm-1"></div>
                                 </div>
 
                             </div>

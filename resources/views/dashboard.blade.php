@@ -92,7 +92,7 @@
                                     <tr>
                                         <td>Saldo</td>
                                         <td>{{ number_format($saldo_ejecutado_bar, 2) }}</td>
-                                        <td>{{ number_format($saldo_programado_bar, 2) }}</td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                     </tr>
@@ -250,7 +250,7 @@
                 <div class="col-lg-6 col-md-12">
                     <div class="card">
                         <div class="card-header card-header-primary">
-                            <h4 class="card-title">Inversiones Retorno Fluctuante</h4>
+                            <h4 class="card-title">Inversiones Retorno Variable</h4>
                             <p class="card-category">{{ $mes_actual_text }}</p>
                         </div>
                         <div class="card-body table-responsive">

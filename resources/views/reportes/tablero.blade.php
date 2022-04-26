@@ -4,23 +4,6 @@
         <div class="container-fluid">
 
             <div class="row">
-                <div class="col-md-3">
-                    <a class="btn btn-primary" href="{{ route('categorias.create_categoria') }}" role="button">
-                        + Nueva Categoria
-                    </a>
-                </div>
-                <div class="col-md-3">
-                    <a class="btn btn-primary" href="{{ route('categorias.create') }}" role="button">
-                        + Nueva Subcategoria
-                    </a>
-                </div>
-                <div class="col-md-3"></div>
-                <div class="col-md-12"></div>
-            </div>
-
-            <br>
-
-            <div class="row">
                 <div class="card card-nav-tabs card-plain">
                     <div class="card-header card-header-primary">
                         <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->

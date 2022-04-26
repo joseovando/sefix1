@@ -23,16 +23,16 @@
     </script>
 
     <div class="content">
-        
+
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-3">
-                    <a class="btn btn-primary" href="{{ route('categorias.create_categoria') }}" role="button">
+                    <a class="btn btn-primary" href="{{ route('categorias.create_categoria', $comercial) }}" role="button">
                         + Nueva Categoria
                     </a>
                 </div>
                 <div class="col-md-3">
-                    <a class="btn btn-primary" href="{{ route('categorias.create') }}" role="button">
+                    <a class="btn btn-primary" href="{{ route('categorias.create', $comercial) }}" role="button">
                         + Nueva Subcategoria
                     </a>
                 </div>

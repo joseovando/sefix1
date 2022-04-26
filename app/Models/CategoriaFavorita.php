@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $id_categoria
  * @property int $orden
+ * @property int $plantilla
  * @property int $estado
  * @property int $id_user
  * @property string $created_at
  * @property string $updated_at
  */
-class /Models/CategoriaFavorita extends Model
+class CategoriaFavorita extends Model
 {
     /**
      * The table associated with the model.
@@ -25,5 +26,5 @@ class /Models/CategoriaFavorita extends Model
     /**
      * @var array
      */
-    protected $fillable = ['id_categoria', 'orden', 'estado', 'id_user', 'created_at', 'updated_at'];
+    protected $fillable = ['id_categoria', 'orden', 'plantilla', 'estado', 'id_user', 'created_at', 'updated_at'];
 }
