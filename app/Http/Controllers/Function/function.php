@@ -12,6 +12,35 @@ function navegador_mobile()
     return $navegador_mobile;
 }
 
+function diaEs($fecha)
+{
+    $day = date("l", $fecha);
+    switch ($day) {
+        case "Sunday":
+            $dia = "Dom";
+            break;
+        case "Monday":
+            $dia = "Lun";
+            break;
+        case "Tuesday":
+            $dia = "Mar";
+            break;
+        case "Wednesday":
+            $dia = "Mie";
+            break;
+        case "Thursday":
+            $dia = "Jue";
+            break;
+        case "Friday":
+            $dia = "Vie";
+            break;
+        case "Saturday":
+            $dia = "Sab";
+            break;
+    }
+    return $dia;
+}
+
 function meses()
 {
     $meses = array(
@@ -155,12 +184,13 @@ function total_monto_programado($fecha_actual, $mes_actual, $array_programados)
     return $total_egreso_programado;
 }
 
-function total_ingresos_egresos_saldo_mes($fecha_actual)
+function total_ingresos_egresos_saldo_mes($fecha_actual, $comercial)
 {
     $mes_actual = mes_actual($fecha_actual);
     $date_actual = $fecha_actual;
 
     $vistaEgresos = DB::table('vista_egresos')
+        ->where('comercial', '=', $comercial)
         ->where('estado', '=', 1)
         ->where('id_user', '=', auth()->id())
         ->whereBetween('fecha', $mes_actual)
@@ -168,6 +198,7 @@ function total_ingresos_egresos_saldo_mes($fecha_actual)
         ->get();
 
     $vistaIngresos = DB::table('vista_ingresos')
+        ->where('comercial', '=', $comercial)
         ->where('estado', '=', 1)
         ->where('id_user', '=', auth()->id())
         ->whereBetween('fecha', $mes_actual)
@@ -186,12 +217,14 @@ function total_ingresos_egresos_saldo_mes($fecha_actual)
     }
 
     $vistaEgresoProgramados = DB::table('vista_egreso_programado')
+        ->where('comercial', '=', $comercial)
         ->where('estado_egreso_programado', '=', 1)
         ->where('id_user_egreso_programado', '=', auth()->id())
         ->orderBy('fecha_inicio', 'ASC')
         ->get();
 
     $vistaIngresoProgramados = DB::table('vista_ingreso_programado')
+        ->where('comercial', '=', $comercial)
         ->where('estado_ingreso_programado', '=', 1)
         ->where('id_user_ingreso_programado', '=', auth()->id())
         ->orderBy('fecha_inicio', 'ASC')
@@ -220,12 +253,13 @@ function total_ingresos_egresos_saldo_mes($fecha_actual)
     );
 }
 
-function total_egreso_categoria_mes($fecha_actual, $tipo)
+function total_egreso_categoria_mes($fecha_actual, $tipo, $comercial)
 {
     $mes_actual = mes_actual($fecha_actual);
 
     $vistaCategorias = DB::table('vista_categoria_padres')
         ->where('tipo', '=', $tipo)
+        ->where('comercial', '=', $comercial)
         ->where('estado', '=', 1)
         ->where('id_user', '=', auth()->id())
         ->orwhere('plantilla', '=', 1)
@@ -241,6 +275,7 @@ function total_egreso_categoria_mes($fecha_actual, $tipo)
         $monto_egreso = 0;
 
         $vistaEgresos = DB::table('vista_egresos')
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->where('id_user', '=', auth()->id())
             ->where('id_padre', '=', $vistaCategoria->id)
@@ -260,12 +295,13 @@ function total_egreso_categoria_mes($fecha_actual, $tipo)
     return array($egreso_label, $egreso_data);
 }
 
-function total_categoria_mes($fecha_actual, $categoria, $tipo)
+function total_categoria_mes($fecha_actual, $categoria, $tipo, $comercial)
 {
     $mes_actual = mes_actual($fecha_actual);
 
     if ($tipo == 2) {
         $vistaEgresos = DB::table('vista_egresos')
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->where('id_user', '=', auth()->id())
             ->where('id_padre', '=', $categoria)
@@ -274,6 +310,7 @@ function total_categoria_mes($fecha_actual, $categoria, $tipo)
             ->get();
     } else {
         $vistaEgresos = DB::table('vista_ingresos')
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->where('id_user', '=', auth()->id())
             ->where('id_padre', '=', $categoria)
@@ -291,6 +328,7 @@ function total_categoria_mes($fecha_actual, $categoria, $tipo)
     if ($tipo == 2) {
         $vistaEgresoProgramados = DB::table('vista_egreso_programado')
             ->where('estado_egreso_programado', '=', 1)
+            ->where('comercial', '=', $comercial)
             ->where('id_user_egreso_programado', '=', auth()->id())
             ->where('id_padre', '=', $categoria)
             ->orderBy('fecha_inicio', 'ASC')
@@ -298,6 +336,7 @@ function total_categoria_mes($fecha_actual, $categoria, $tipo)
     } else {
         $vistaEgresoProgramados = DB::table('vista_ingreso_programado')
             ->where('estado_ingreso_programado', '=', 1)
+            ->where('comercial', '=', $comercial)
             ->where('id_user_ingreso_programado', '=', auth()->id())
             ->where('id_padre', '=', $categoria)
             ->orderBy('fecha_inicio', 'ASC')
@@ -312,7 +351,7 @@ function total_categoria_mes($fecha_actual, $categoria, $tipo)
     );
 }
 
-function total_categoria_anual($fecha_actual, $categoria, $tipo)
+function total_categoria_anual($fecha_actual, $categoria, $tipo, $comercial)
 {
     for ($i = 0; $i < 12; $i++) {
 
@@ -326,7 +365,7 @@ function total_categoria_anual($fecha_actual, $categoria, $tipo)
         list(
             $egreso_categoria_anual[$i],
             $egreso_programado_categoria_anual[$i]
-        ) = total_categoria_mes($fecha, $categoria, $tipo);
+        ) = total_categoria_mes($fecha, $categoria, $tipo, $comercial);
     }
 
     return array(
@@ -335,12 +374,13 @@ function total_categoria_anual($fecha_actual, $categoria, $tipo)
     );
 }
 
-function total_subcategoria_mes($fecha_actual, $categoria, $tipo)
+function total_subcategoria_mes($fecha_actual, $categoria, $tipo, $comercial)
 {
     $mes_actual = mes_actual($fecha_actual);
 
     if ($tipo == 2) {
         $vistaEgresos = DB::table('vista_egresos')
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->where('id_user', '=', auth()->id())
             ->where('id_categoria', '=', $categoria)
@@ -349,6 +389,7 @@ function total_subcategoria_mes($fecha_actual, $categoria, $tipo)
             ->get();
     } else {
         $vistaEgresos = DB::table('vista_ingresos')
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->where('id_user', '=', auth()->id())
             ->where('id_categoria', '=', $categoria)
@@ -365,6 +406,7 @@ function total_subcategoria_mes($fecha_actual, $categoria, $tipo)
 
     if ($tipo == 2) {
         $vistaEgresoProgramados = DB::table('vista_egreso_programado')
+            ->where('comercial', '=', $comercial)
             ->where('estado_egreso_programado', '=', 1)
             ->where('id_user_egreso_programado', '=', auth()->id())
             ->where('id_categoria', '=', $categoria)
@@ -372,6 +414,7 @@ function total_subcategoria_mes($fecha_actual, $categoria, $tipo)
             ->get();
     } else {
         $vistaEgresoProgramados = DB::table('vista_ingreso_programado')
+            ->where('comercial', '=', $comercial)
             ->where('estado_ingreso_programado', '=', 1)
             ->where('id_user_ingreso_programado', '=', auth()->id())
             ->where('id_categoria', '=', $categoria)
@@ -387,7 +430,7 @@ function total_subcategoria_mes($fecha_actual, $categoria, $tipo)
     );
 }
 
-function total_subcategoria_anual($fecha_actual, $categoria, $tipo)
+function total_subcategoria_anual($fecha_actual, $categoria, $tipo, $comercial)
 {
     for ($i = 0; $i < 12; $i++) {
 
@@ -401,7 +444,7 @@ function total_subcategoria_anual($fecha_actual, $categoria, $tipo)
         list(
             $total_egreso_subcategoria[$i],
             $total_egreso_programado_subcategoria[$i]
-        ) = total_subcategoria_mes($fecha, $categoria, $tipo);
+        ) = total_subcategoria_mes($fecha, $categoria, $tipo, $comercial);
     }
 
     $data_total_egreso_subcategoria = json_encode($total_egreso_subcategoria);
@@ -471,14 +514,16 @@ function dias_calendario($date, $dia_semana)
         $dias_diferencia = $i - $dia_semana + 1;
         $diferencia_text = $dias_diferencia . " day";
         $date_future = strtotime($diferencia_text, strtotime($fechaActual));
-        $calendario[$i] = date('d F', $date_future);
+        $dia = diaEs($date_future);
+        $calendario[$i] = $dia . " " . date('d F', $date_future);
         $fecha[$i] = date('Y_m_d', $date_future);
     }
 
     for ($i = 1; $i <= $dias_faltantes; $i++) {
         $diferencia_text = "+" . $i . " day";
         $date_future = strtotime($diferencia_text, strtotime($fechaActual));
-        $calendario[$contador] = date('d F', $date_future);
+        $dia = diaEs($date_future);
+        $calendario[$contador] = $dia . " " . date('d F', $date_future);
         $fecha[$contador] = date('Y_m_d', $date_future);
         $contador++;
     }
@@ -497,7 +542,7 @@ function fechas_first_last($fecha_actual)
     return $fecha;
 }
 
-function total_tipo_mes($fecha_actual, $tipo)
+function total_tipo_mes($fecha_actual, $tipo, $comercial)
 {
     $contador = 0;
     $nombre_categoria = array();
@@ -508,6 +553,7 @@ function total_tipo_mes($fecha_actual, $tipo)
 
     $vistaCategorias = DB::table('vista_categoria_padres')
         ->where('tipo', '=', $tipo)
+        ->where('comercial', '=', $comercial)
         ->where('estado', '=', 1)
 
         ->orderBy('orden', 'ASC')
@@ -523,7 +569,7 @@ function total_tipo_mes($fecha_actual, $tipo)
         list(
             $egreso_categoria_mes[$contador],
             $egreso_categoria_programado_mes[$contador]
-        ) = total_categoria_mes($fecha_actual, $vistaCategoria->id, $tipo);
+        ) = total_categoria_mes($fecha_actual, $vistaCategoria->id, $tipo, $comercial);
 
         $diferencia_egreso_categoria_mes[$contador] = $egreso_categoria_mes[$contador] - $egreso_categoria_programado_mes[$contador];
 
@@ -557,9 +603,10 @@ function total_tipo_mes($fecha_actual, $tipo)
     );
 }
 
-function subcategoria_mes($fecha_actual, $categoria)
+function subcategoria_mes($fecha_actual, $categoria, $comercial)
 {
     $contador = 0;
+    $tipo = 0;
     $nombre_subcategoria = array();
     $egreso_subcategoria_mes = array();
     $egreso_subcategoria_programado_mes = array();
@@ -568,6 +615,7 @@ function subcategoria_mes($fecha_actual, $categoria)
 
     $vistaCategorias = DB::table('vista_categorias')
         ->where('id_padre', '=', $categoria)
+        ->where('comercial', '=', $comercial)
         ->where('estado', '=', 1)
         ->orderBy('orden', 'ASC')
         ->get();
@@ -581,7 +629,7 @@ function subcategoria_mes($fecha_actual, $categoria)
         list(
             $egreso_subcategoria_mes[$contador],
             $egreso_subcategoria_programado_mes[$contador]
-        ) = total_subcategoria_mes($fecha_actual, $vistaCategoria->id, $vistaCategoria->tipo);
+        ) = total_subcategoria_mes($fecha_actual, $vistaCategoria->id, $vistaCategoria->tipo, $comercial);
 
         $diferencia_egreso_subcategoria_mes[$contador] = $egreso_subcategoria_mes[$contador] - $egreso_subcategoria_programado_mes[$contador];
 
@@ -615,4 +663,36 @@ function subcategoria_mes($fecha_actual, $categoria)
         $contador,
         $tipo,
     );
+}
+
+function total_categoria_dia($fecha, $categoria, $tipo, $comercial)
+{
+
+    if ($tipo == 2) {
+        $vistaIngresos = DB::table('vista_egresos')
+            ->where('id_padre', '=', $categoria)
+            ->where('fecha', '=', $fecha)
+            ->where('comercial', '=', $comercial)
+            ->where('id_user', '=', auth()->id())
+            ->where('estado', '=', 1)
+            ->orderBy('id', 'ASC')
+            ->get();
+    } else {
+        $vistaIngresos = DB::table('vista_ingresos')
+            ->where('id_padre', '=', $categoria)
+            ->where('fecha', '=', $fecha)
+            ->where('comercial', '=', $comercial)
+            ->where('id_user', '=', auth()->id())
+            ->where('estado', '=', 1)
+            ->orderBy('id', 'ASC')
+            ->get();
+    }
+
+    $monto_total = 0;
+
+    foreach ($vistaIngresos as $vistaIngreso) {
+        $monto_total = $monto_total + $vistaIngreso->monto_ejecutado;
+    }
+
+    return $monto_total;
 }

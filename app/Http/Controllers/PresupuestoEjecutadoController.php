@@ -30,11 +30,50 @@ class PresupuestoEjecutadoController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function create($id, $menu, $date, $estado, Request $request)
+    public function search(Request $request)
     {
-        $id_categoria = $id;
+        include('IncludeReporte/ComercialSwitchInclude.php');
+        include('IncludePresupuestoEjecutado/SearchCategoriaInclude.php');
 
-        include('IncludePresupuestoProgramado/MenuTituloTipoInclude.php');
+        return response()->json([
+            'search_result' => $search_result,
+            'vistaCategoria' => $vistaCategoria,
+            'egreso_search' => $egreso,
+            'detalle' => $detalle,
+            'fechas' => $fechas,
+            'total_ejecutado_mes_search' => $total_ejecutado_mes,
+            'total_programado_mes_search' => $total_programado_mes,
+            'diferencia_mes_search' => $diferencia_mes,
+            'porcentaje_mes_search' => $porcentaje_mes
+        ], 200);
+    }
+
+    public function totales(Request $request)
+    {
+        $egreso_dia_primario = array();
+        $total_ejecutado = 0;
+        $total_programado = 0;
+        $tipo = request('tipo');
+
+        include('IncludeReporte/ComercialSwitchInclude.php');
+        include('IncludePresupuestoEjecutado/TotalesPresupuestoEjecutadoInclude.php');
+
+        return response()->json([
+            'egreso_primario' => $egreso_dia_primario,
+            'total_ejecutado_mes_primario' => $total_ejecutado_mes_primario,
+            'total_programado_mes_primario' => $total_programado_mes_primario,
+            'diferencia_mes_primario' => $diferencia_mes_primario,
+            'porcentaje_mes_primario' => $porcentaje_mes_primario,
+            'total_ejecutado' => $total_ejecutado,
+            'total_programado' => $total_programado,
+        ], 200);
+    }
+
+    public function cambiar_fecha(Request $request)
+    {
+        $id_categoria = request('id_categoria');
+        $id = request('id_categoria');
+        $tipo = request('tipo');
 
         if (request('llave_form') == 1) {
             $date = request('date');
@@ -46,87 +85,93 @@ class PresupuestoEjecutadoController extends Controller
             ->orderBy('orden', 'ASC')
             ->get();
 
-        $vistaCategorias = DB::table('vista_categorias')
-            ->where('id_padre', '=', $id)
+        if ($tipo == 1) {
+            $vistaCategorias = DB::table('vista_ingreso_programado')
+                ->select('id_categoria')
+                ->where('id_padre', '=', $id)
+                ->where('estado_ingreso_programado', '=', 1)
+                ->where('id_user_ingreso_programado', '=', auth()->id())
+                ->groupBy('id_categoria')
+                ->get();
+        } else {
+            $vistaCategorias = DB::table('vista_egreso_programado')
+                ->select('id_categoria')
+                ->where('id_padre', '=', $id)
+                ->where('estado_egreso_programado', '=', 1)
+                ->where('id_user_egreso_programado', '=', auth()->id())
+                ->groupBy('id_categoria')
+                ->get();
+        }
+
+        include('IncludeReporte/ComercialSwitchInclude.php');
+        include('IncludePresupuestoEjecutado/TablePresupuestoEjecutadoInclude.php');
+
+        return response()->json([
+            'vistaCategorias' => $vistaCategorias,
+            'array_categoria' => $array_categoria,
+            'n_inputs' => $n_inputs,
+            'calendario' => $calendario,
+            'fechas' => $fechas,
+            'egreso' => $egreso,
+            'detalle' => $detalle,
+            'id_categoria' => $id_categoria,
+            'date' => $date
+        ], 200);
+    }
+
+    public function create($id, $menu, $date, $estado, $comercial, Request $request)
+    {
+        $id_categoria = $id;
+        $n_ajax = 10;
+
+        include('IncludePresupuestoProgramado/MenuTituloTipoInclude.php');
+        include('IncludeReporte/ComercialSwitchInclude.php');
+
+        if (request('llave_form') == 1) {
+            $date = request('date');
+        }
+
+        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
+            ->where('tipo', '=', $tipo)
+            ->where('comercial', '=', $comercial)
             ->where('estado', '=', 1)
             ->orderBy('orden', 'ASC')
             ->get();
 
-        $dia_semana = date("N", strtotime($date));
-        list($calendario, $fechas) = dias_calendario($date, $dia_semana);
-
-        $n_inputs = 6;
-        $egreso[0][0] = 0;
-        $detalle[0][0] = '';
-        $total_ejecutado_mes = 0;
-        $total_programado_mes = 0;
-
-        foreach ($vistaCategorias as $vistaCategoria) {
-            $mes_actual = mes_actual($date);
-
-            for ($i = 0; $i <= $n_inputs; $i++) {
-
-                $total_monto_dia[$i] = 0;
-                $fecha = str_replace("_", "-", $fechas[$i]);
-
-                if ($tipo == 2) {
-                    $egreso_montos = DB::table('egreso')
-                        ->where('id_categoria', '=', $vistaCategoria->id)
-                        ->where('fecha', '=', $fecha)
-                        ->where('estado', '=', 1)
-                        ->where('id_user', '=', auth()->id())
-                        ->get();
-
-                    $total_dias = DB::table('vista_egresos')
-                        ->where('fecha', '=', $fecha)
-                        ->where('id_padre', '=', $id)
-                        ->where('estado', '=', 1)
-                        ->where('id_user', '=', auth()->id())
-                        ->get();
-                } else {
-                    $egreso_montos = DB::table('ingreso')
-                        ->where('id_categoria', '=', $vistaCategoria->id)
-                        ->where('fecha', '=', $fecha)
-                        ->where('estado', '=', 1)
-                        ->where('id_user', '=', auth()->id())
-                        ->get();
-
-                    $total_dias = DB::table('vista_ingresos')
-                        ->where('fecha', '=', $fecha)
-                        ->where('id_padre', '=', $id)
-                        ->where('estado', '=', 1)
-                        ->where('id_user', '=', auth()->id())
-                        ->get();
-                }
-
-                foreach ($total_dias as $total_dia) {
-                    $total_monto_dia[$i] = $total_monto_dia[$i] + $total_dia->monto_ejecutado;
-                }
-
-                foreach ($egreso_montos as $egreso_monto) {
-                    $egresoMonto = $egreso_monto->monto_ejecutado + 0;
-
-                    if ($egresoMonto > 0) {
-                        $egreso[$i][$vistaCategoria->id] = $egresoMonto;
-                        $detalle[$i][$vistaCategoria->id] = $egreso_monto->detalle;
-                    }
-                }
-            }
-
-            list(
-                $total_ejecutado_subcategoria[$vistaCategoria->id],
-                $total_programado_subcategoria[$vistaCategoria->id]
-            ) = total_subcategoria_mes($date, $vistaCategoria->id, $tipo);
-
-            $total_ejecutado_mes = $total_ejecutado_mes + $total_ejecutado_subcategoria[$vistaCategoria->id];
-            $total_programado_mes = $total_programado_mes + $total_programado_subcategoria[$vistaCategoria->id];
+        if ($tipo == 1) {
+            $vistaCategorias = DB::table('vista_ingreso_programado')
+                ->select('id_categoria')
+                ->where('id_padre', '=', $id)
+                ->where('estado_ingreso_programado', '=', 1)
+                ->where('id_user_ingreso_programado', '=', auth()->id())
+                ->groupBy('id_categoria')
+                ->get();
+        } else {
+            $vistaCategorias = DB::table('vista_egreso_programado')
+                ->select('id_categoria')
+                ->where('id_padre', '=', $id)
+                ->where('estado_egreso_programado', '=', 1)
+                ->where('id_user_egreso_programado', '=', auth()->id())
+                ->groupBy('id_categoria')
+                ->get();
         }
+
+        include('IncludePresupuestoEjecutado/TablePresupuestoEjecutadoInclude.php');
+        include('IncludeCategoria/BuscadorCategoriasInclude.php');
+
+        $fecha_actual = $date;
+        $date_future = strtotime('-0 day', strtotime($fecha_actual));
+        $mes_actual_text = date("F Y", $date_future);
+
+        include('IncludeReporte/IngresosEgresosSaldoAnualInclude.php');
 
         return view('presupuestosejecutados.create', compact(
             'vistaCategorias',
             'vistaCategoriaPadres',
             'id_categoria',
+            'array_categoria',
             'n_inputs',
+            'n_ajax',
             'calendario',
             'fechas',
             'egreso',
@@ -134,14 +179,24 @@ class PresupuestoEjecutadoController extends Controller
             'total_monto_dia',
             'total_ejecutado_subcategoria',
             'total_programado_subcategoria',
+            'diferencia',
+            'porcentaje',
             'total_ejecutado_mes',
             'total_programado_mes',
+            'color_porcentaje',
             'date',
             'titulo',
             'menu',
             'tipo',
             'date',
             'estado',
+            'json',
+            'comercial',
+            'data_total_ingreso_mes',
+            'data_total_ingreso_programado_mes',
+            'data_total_egreso_mes',
+            'data_total_egreso_programado_mes',
+            'mes_actual_text'
         ));
     }
 
@@ -153,120 +208,29 @@ class PresupuestoEjecutadoController extends Controller
      */
     public function store(Request $request)
     {
-        //$fechas = fechas(request('date'));
-        $dia_semana = date("N", strtotime(request('date')));
-        list($calendario, $fechas) = dias_calendario(request('date'), $dia_semana);
-        $n_inputs = 6;
+        $tipo = request('tipo');
 
-        $vistaCategorias = DB::table('vista_categorias')
-            ->where('id_padre', '=', request('id_categoria'))
-            ->where('estado', '=', 1)
-            ->orderBy('orden', 'ASC')
-            ->get();
+        include('IncludeReporte/ComercialSwitchInclude.php');
+        include('IncludePresupuestoEjecutado/StorePresupuestoEjecutadoInclude.php');
+        include('IncludePresupuestoEjecutado/TotalesPresupuestoEjecutadoInclude.php');
+        include('IncludePresupuestoEjecutado/StorePresupuestoEjecutadoAjaxInclude.php');
+        include('IncludePresupuestoEjecutado/StorePresupuestoEjecutadoSearchInclude.php');
 
-        foreach ($vistaCategorias as $vistaCategoria) {
-            for ($i = 0; $i <= $n_inputs; $i++) {
-
-                $input = $vistaCategoria->id . "_" . $fechas[$i];
-                $input_detalle = "detalle_" . $vistaCategoria->id . "_" . $fechas[$i];
-                $fecha = str_replace("_", "-", $fechas[$i]);
-                $monto_egreso = request($input) + 0;
-
-                if ($monto_egreso > 0) {
-
-                    if (request('tipo') == 2) {
-
-                        $egreso_montos = DB::table('egreso')
-                            ->where('id_categoria', '=', $vistaCategoria->id)
-                            ->where('estado', '=', 1)
-                            ->where('id_user', '=', auth()->id())
-                            ->where('fecha', '=', $fecha)
-                            ->get();
-
-                        $egresoMonto = 0;
-                        $egresoId = 0;
-
-                        foreach ($egreso_montos as $egreso_monto) {
-                            $egresoMonto = $egreso_monto->monto_ejecutado + 0;
-                            $egresoId = $egreso_monto->id;
-                        }
-
-                        if ($egresoMonto > 0) {
-                            $egreso = Egreso::find($egresoId);
-                            $egreso->detalle = request($input_detalle);
-                            $egreso->monto_ejecutado = $monto_egreso;
-                            $egreso->update();
-                        } else {
-                            $egreso = new Egreso();
-                            $egreso->id_categoria = $vistaCategoria->id;
-                            $egreso->detalle = request($input_detalle);
-                            $egreso->fecha = $fecha;
-                            $egreso->monto_ejecutado = $monto_egreso;
-                            $egreso->estado = 1;
-                            $egreso->id_user = auth()->id();
-                            $egreso->save();
-
-                            $egresoSetting = new EgresoSetting();
-                            $egresoSetting->id_egreso = $egreso->id;
-                            $egresoSetting->id_frecuencia = 1;
-                            $egresoSetting->fecha_inicio = $fecha;
-                            $egresoSetting->estado = 1;
-                            $egresoSetting->id_user = auth()->id();
-                            $egresoSetting->save();
-                        }
-                    } else {
-
-                        $ingreso_montos = DB::table('ingreso')
-                            ->where('id_categoria', '=', $vistaCategoria->id)
-                            ->where('fecha', '=', $fecha)
-                            ->where('estado', '=', 1)
-                            ->where('id_user', '=', auth()->id())
-                            ->get();
-
-                        $ingresoMonto = 0;
-                        $ingresoId = 0;
-
-                        foreach ($ingreso_montos as $ingreso_monto) {
-                            $ingresoMonto = $ingreso_monto->monto_ejecutado + 0;
-                            $ingresoId = $ingreso_monto->id;
-                        }
-
-                        if ($ingresoMonto > 0) {
-                            $ingreso = Ingreso::find($ingresoId);
-                            $ingreso->detalle = request($input_detalle);
-                            $ingreso->monto_ejecutado = $monto_egreso;
-                            $ingreso->update();
-                        } else {
-                            $ingreso = new Ingreso();
-                            $ingreso->id_categoria = $vistaCategoria->id;
-                            $ingreso->detalle = request($input_detalle);
-                            $ingreso->fecha = $fecha;
-                            $ingreso->monto_ejecutado = $monto_egreso;
-                            $ingreso->estado = 1;
-                            $ingreso->id_user = auth()->id();
-                            $ingreso->save();
-
-                            $ingresoSetting = new IngresoSetting();
-                            $ingresoSetting->id_ingreso = $ingreso->id;
-                            $ingresoSetting->id_frecuencia = 1;
-                            $ingresoSetting->fecha_inicio = $fecha;
-                            $ingresoSetting->estado = 1;
-                            $ingresoSetting->id_user = auth()->id();
-                            $ingresoSetting->save();
-                        }
-                    }
-                }
-            }
-        }
-
-        $estado = 1;
-
-        return redirect()->route('presupuestosejecutados.create', [
-            'id' => request('id_categoria'),
-            'menu' => request('menu'),
-            'date' => request('date'),
-            'estado' => $estado,
-        ]);
+        return response()->json([
+            'egreso_primario' => $egreso_dia_primario,
+            'total_ejecutado_mes_primario' => $total_ejecutado_mes_primario,
+            'total_programado_mes_primario' => $total_programado_mes_primario,
+            'diferencia_mes_primario' => $diferencia_mes_primario,
+            'porcentaje_mes_primario' => $porcentaje_mes_primario,
+            'total_ejecutado' => $total_ejecutado,
+            'total_programado' => $total_programado,
+            'egreso_search' => $egreso_dia_search,
+            'total_ejecutado_mes_search' => $total_ejecutado_mes_search,
+            'total_programado_mes_search' => $total_programado_mes_search,
+            'diferencia_mes_search' => $diferencia_mes_search,
+            'porcentaje_mes_search' => $porcentaje_mes_search,
+            'llave_categoria' => $llave_categoria
+        ], 200);
     }
 
     /**

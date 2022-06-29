@@ -68,7 +68,10 @@
             </div>
           </div>
           <div class="card-footer justify-content-center">
-            <button type="submit" class="btn btn-primary btn-link btn-lg">{{ __('Ingresar') }}</button>
+            {{-- <button type="submit" class="btn btn-success btn-link btn-lg">{{ __('Ingresar') }}</button> --}}
+            <button type="submit" class="btn btn-primary btn-round">
+              <i class="material-icons">favorite</i> Ingresar
+            </button>
           </div>
         </div>
       </form>

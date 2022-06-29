@@ -19,12 +19,10 @@
 
     <style type="text/css">
         nav>.nav.nav-tabs {
-
             border: none;
             color: #fff;
             background: #272e38;
             border-radius: 0;
-
         }
 
         nav>div a.nav-item.nav-link,

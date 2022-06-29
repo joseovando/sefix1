@@ -2177,8 +2177,7 @@ pre code {
 
 .form-control:disabled,
 .form-control[readonly] {
-  background-color: #e9ecef;
-  opacity: 1;
+
 }
 
 select.form-control:not([size]):not([multiple]) {
@@ -17384,8 +17383,7 @@ label {
 }
 
 .card-plain .card-body {
-  padding-left: 5px;
-  padding-right: 5px;
+
 }
 
 .card-plain .card-header-image {

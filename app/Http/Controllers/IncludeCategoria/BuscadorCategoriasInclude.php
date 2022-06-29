@@ -1,6 +1,6 @@
 <?php
 
-$vistaCategorias = DB::table('vista_categorias')
+$vistaCategoriaSearchs = DB::table('vista_categorias')
     ->where('estado', '=', 1)
     ->where('plantilla', '=', 1)
     ->where('comercial', '=', $comercial)
@@ -9,7 +9,7 @@ $vistaCategorias = DB::table('vista_categorias')
     ->orderBy('categoria', 'ASC')
     ->get();
 
-$vistaCategoriaUsers = DB::table('vista_categorias')
+$vistaCategoriaUserSearchs = DB::table('vista_categorias')
     ->where('estado', '=', 1)
     ->where('plantilla', '=', 0)
     ->where('comercial', '=', $comercial)
@@ -22,13 +22,13 @@ $vistaCategoriaUsers = DB::table('vista_categorias')
 $estado = 0;
 $json_plantilla = [];
 
-foreach ($vistaCategorias as $vistaCategoria) {
+foreach ($vistaCategoriaSearchs as $vistaCategoria) {
     $json_plantilla[] = $vistaCategoria->categoria . " | " . substr($vistaCategoria->categoria_padre, 0, 25);
 }
 
 $json_user = [];
 
-foreach ($vistaCategoriaUsers as $vistaCategoriaUser) {
+foreach ($vistaCategoriaUserSearchs as $vistaCategoriaUser) {
     $json_user[] = $vistaCategoriaUser->categoria . " | " . substr($vistaCategoriaUser->categoria_padre, 0, 25);
 }
 

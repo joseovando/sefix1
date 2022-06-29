@@ -180,16 +180,49 @@ class CategoriaController extends Controller
 
     public function tablero_categoria($comercial)
     {
-        $vistaCategoriaPadres = DB::table('vista_categoria_padres')
+        $vistaCategorias = DB::table('vista_categorias')
             ->where('estado', '=', 1)
             ->where('comercial', '=', $comercial)
             ->where('id_user', '=', auth()->id())
-            ->orderBy('orden_tipo', 'ASC')
+            ->orderBy('tipo', 'ASC')
             ->orderBy('orden', 'ASC')
             ->get();
 
+        $categoriaTipos = DB::table('categoria_tipo')
+            ->where('estado', '=', 1)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $categoriaLogos = DB::table('categoria_logo')
+            ->where('estado', '=', 1)
+            ->orderBy('label', 'ASC')
+            ->get();
+
+        $vistaCategoriaIngresos = DB::table('vista_categoria_padres')
+            ->where('estado', '=', 1)
+            ->where('tipo', '=', 1)
+            ->where('comercial', '=', $comercial)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $vistaCategoriaEgresos = DB::table('vista_categoria_padres')
+            ->where('estado', '=', 1)
+            ->where('tipo', '=', 2)
+            ->where('comercial', '=', $comercial)
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $vistaUserRol = DB::table('vista_user_rol')
+            ->where('user_id', '=', auth()->id())
+            ->first();
+
         return view('categorias.tablero_categoria', compact(
-            'vistaCategoriaPadres',
+            'vistaCategorias',
+            'categoriaTipos',
+            'categoriaLogos',
+            'vistaCategoriaIngresos',
+            'vistaCategoriaEgresos',
+            'vistaUserRol',
             'comercial'
         ));
     }
@@ -300,7 +333,24 @@ class CategoriaController extends Controller
         $favorita->id_user = auth()->id();
         $favorita->save();
 
-        return response()->json(['success' => 'Registro Guardado Correctamente.']);
+        $vistaCategorias = DB::table('vista_categorias')
+            ->where('estado', '=', 1)
+            ->where('comercial', '=', request('comercial'))
+            ->where('id_user', '=', auth()->id())
+            ->orderBy('tipo', 'ASC')
+            ->orderBy('orden', 'ASC')
+            ->get();
+
+        $vistaUserRol = DB::table('vista_user_rol')
+            ->where('user_id', '=', auth()->id())
+            ->first();
+
+        return response()->json([
+            'categoria' => $categoria,
+            'llave_padre' => $llave_padre,
+            'vistaCategorias' => $vistaCategorias,
+            'vistaUserRol' => $vistaUserRol
+        ], 200);
     }
 
     public function store_favorita(Request $request)
@@ -378,11 +428,13 @@ class CategoriaController extends Controller
             ->orderBy('label', 'ASC')
             ->get();
 
-        return view('categorias.edit_categoria', compact(
-            'vistaCategoriaPadre',
-            'categoriaTipos',
-            'categoriaLogos'
-        ));
+
+
+        return response()->json([
+            'vistaCategoriaPadre' => $vistaCategoriaPadre,
+            'categoriaTipos' => $categoriaTipos,
+            'categoriaLogos' => $categoriaLogos,
+        ], 200);
     }
 
     /**

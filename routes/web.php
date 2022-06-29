@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\BrujulaController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\CuentaController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PresupuestoEjecutadoController;
 use App\Http\Controllers\PresupuestoProgramadoController;
 use Illuminate\Support\Facades\Route;
@@ -81,6 +83,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::resource('roles', 'App\Http\Controllers\RoleController', ['except' => ['show']]);
 	Route::get('roles/{id}/delete', [RoleController::class, 'delete'])->name('roles.delete');
 
+	Route::get('home/{id}/switch', [HomeController::class, 'switch'])->name('home.switch');
+
 	Route::get('reportes/{mes}/{ano}/index', [ReporteController::class, 'index'])->name('reportes.index');
 	Route::get('reportes/{mes}/{ano}/{tipo}/categoria', [ReporteController::class, 'categoria'])->name('reportes.categoria');
 	Route::get('reportes/tablero', [ReporteController::class, 'tablero'])->name('reportes.tablero');
@@ -104,19 +108,39 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('categorias/{tipo}/{comercial}/getVistaCategoriaFavorita', 'App\Http\Controllers\CategoriaController@getVistaCategoriaFavorita')->name('categorias.getVistaCategoriaFavorita');
 	Route::post('categorias/store_ajax_categoria', [CategoriaController::class, 'store_ajax_categoria'])->name('categorias.store_ajax_categoria');
 
+	Route::get('brujula/index', [BrujulaController::class, 'index'])->name('brujula.index');
+	Route::post('brujula/store_basicos', [BrujulaController::class, 'store_basicos'])->name('brujula.store_basicos');
+	Route::post('brujula/store_corrientes', [BrujulaController::class, 'store_corrientes'])->name('brujula.store_corrientes');
+	Route::post('brujula/store_inversiones', [BrujulaController::class, 'store_inversiones'])->name('brujula.store_inversiones');
+	Route::post('brujula/store_coeficientes', [BrujulaController::class, 'store_coeficientes'])->name('brujula.store_coeficientes');
+	Route::get('brujula/{id}/edit_corrientes', [BrujulaController::class, 'edit_corrientes'])->name('brujula.edit_corrientes');
+	Route::get('brujula/{id}/delete_corrientes', [BrujulaController::class, 'delete_corrientes'])->name('brujula.delete_corrientes');
+	Route::get('brujula/{id}/edit_inversiones', [BrujulaController::class, 'edit_inversiones'])->name('brujula.edit_inversiones');
+	Route::get('brujula/{id}/delete_inversiones', [BrujulaController::class, 'delete_inversiones'])->name('brujula.delete_inversiones');
+	Route::get('brujula/{id}/edit_coeficientes', [BrujulaController::class, 'edit_coeficientes'])->name('brujula.edit_coeficientes');
+	Route::get('brujula/{id}/delete_coeficientes', [BrujulaController::class, 'delete_coeficientes'])->name('brujula.delete_coeficientes');
+
 	Route::get('presupuestosprogramados/index', [PresupuestoProgramadoController::class, 'index'])->name('presupuestosprogramados.index');
-	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/{estado}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
+	Route::get('presupuestosprogramados/{id}/{menu}/{mes}/{ano}/{estado}/{comercial}/create', [PresupuestoProgramadoController::class, 'create'])->name('presupuestosprogramados.create');
 	Route::post('presupuestosprogramados/store', [PresupuestoProgramadoController::class, 'store'])->name('presupuestosprogramados.store');
 	Route::get('presupuestosprogramados/{id}/{menu}/edit', [PresupuestoProgramadoController::class, 'edit'])->name('presupuestosprogramados.edit');
 	Route::put('presupuestosprogramados/update', [PresupuestoProgramadoController::class, 'update'])->name('presupuestosprogramados.update');
 	Route::get('presupuestosprogramados/{id}/{menu}/delete', [PresupuestoProgramadoController::class, 'delete'])->name('presupuestosprogramados.delete');
+	Route::get('presupuestosprogramados/{id}/desactivar_categorias', 'App\Http\Controllers\PresupuestoProgramadoController@desactivar_categorias')->name('presupuestosprogramados.desactivar_categorias');
+	Route::post('presupuestosprogramados/search', [PresupuestoProgramadoController::class, 'search'])->name('presupuestosprogramados.search');
+	Route::post('presupuestosprogramados/cambiar_fecha', [PresupuestoProgramadoController::class, 'cambiar_fecha'])->name('presupuestosprogramados.cambiar_fecha');
+	Route::post('presupuestosprogramados/activar_categorias', [PresupuestoProgramadoController::class, 'activar_categorias'])->name('presupuestosprogramados.activar_categorias');
+	Route::post('presupuestosprogramados/total_programado', [PresupuestoProgramadoController::class, 'total_programado'])->name('presupuestosprogramados.total_programado');
 
 	Route::get('presupuestosejecutados/index', [PresupuestoEjecutadoController::class, 'index'])->name('presupuestosejecutados.index');
-	Route::get('presupuestosejecutados/{id}/{menu}/{date}/{estado}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
+	Route::get('presupuestosejecutados/{id}/{menu}/{date}/{estado}/{comercial}/create', [PresupuestoEjecutadoController::class, 'create'])->name('presupuestosejecutados.create');
 	Route::post('presupuestosejecutados/store', [PresupuestoEjecutadoController::class, 'store'])->name('presupuestosejecutados.store');
 	Route::get('presupuestosejecutados/{id}/{menu}/edit', [PresupuestoEjecutadoController::class, 'edit'])->name('presupuestosejecutados.edit');
 	Route::put('presupuestosejecutados/update', [PresupuestoEjecutadoController::class, 'update'])->name('presupuestosejecutados.update');
 	Route::get('presupuestosejecutados/{id}/{menu}/delete', [PresupuestoEjecutadoController::class, 'delete'])->name('presupuestosejecutados.delete');
+	Route::post('presupuestosejecutados/search', [PresupuestoEjecutadoController::class, 'search'])->name('presupuestosejecutados.search');
+	Route::post('presupuestosejecutados/totales', [PresupuestoEjecutadoController::class, 'totales'])->name('presupuestosejecutados.totales');
+	Route::post('presupuestosejecutados/cambiar_fecha', [PresupuestoEjecutadoController::class, 'cambiar_fecha'])->name('presupuestosejecutados.cambiar_fecha');
 
 	Route::get('cuentas/{id}/{mes}/{ano}/index', [CuentaController::class, 'index'])->name('cuentas.index');
 	Route::post('cuentas/store', [CuentaController::class, 'store'])->name('cuentas.store');

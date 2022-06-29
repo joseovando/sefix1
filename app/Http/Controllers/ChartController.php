@@ -7,7 +7,6 @@ use App\Models\EnviosGroupBar;
 use App\Models\EnviosPie;
 use App\Models\GastoCategoria;
 
-
 use Illuminate\Http\Request;
 
 class ChartController extends Controller

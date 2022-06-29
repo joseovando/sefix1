@@ -1,133 +1,6 @@
-<style>
-    .margin {
-        margin-left: 10px;
-        margin-right: 10px;
-    }
+<link rel="stylesheet" type="text/css" href="{{ asset('css/sidebar.css') }}">
 
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 60px;
-        height: 34px;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 26px;
-        width: 26px;
-        left: 4px;
-        bottom: 4px;
-        background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
-    }
-
-    input:checked+.slider {
-        background-color: #2196F3;
-    }
-
-    input:focus+.slider {
-        box-shadow: 0 0 1px #2196F3;
-    }
-
-    input:checked+.slider:before {
-        -webkit-transform: translateX(26px);
-        -ms-transform: translateX(26px);
-        transform: translateX(26px);
-    }
-
-    /* Rounded sliders */
-    .slider.round {
-        border-radius: 34px;
-    }
-
-    .slider.round:before {
-        border-radius: 50%;
-    }
-
-</style>
-
-<script type="text/javascript">
-    window.onload = function() {
-        var base_path = '{{ url('/') }}';
-        var llaveswitch = localStorage.getItem("htmlswitch");
-
-        if (llaveswitch == "checked") {
-            var comercial = 1;
-            $("#switch").prop('checked', true);
-            var htmlSwitch = "<h4>&nbsp;&nbsp;Cuenta Comercial</h4>";
-            $('#label_switch').html(htmlSwitch);
-        } else {
-            var comercial = 0;
-            $("#switch").prop('checked', false);
-            var htmlSwitch = "<h4>&nbsp;&nbsp;Cuenta Personal</h4>";
-            $('#label_switch').html(htmlSwitch);
-        }
-
-        var href_ingreso_programado = base_path + "/categorias/1/" + comercial + "/0/index";
-        $("#ingreso_programado").prop('href', href_ingreso_programado);
-        var href_ingreso_ejecutado = base_path + "/categorias/2/" + comercial + "/0/index";
-        $("#ingreso_ejecutado").prop('href', href_ingreso_ejecutado);
-        var href_egreso_programado = base_path + "/categorias/3/" + comercial + "/0/index";
-        $("#egreso_programado").prop('href', href_egreso_programado);
-        var href_egreso_ejecutado = base_path + "/categorias/4/" + comercial + "/0/index";
-        $("#egreso_ejecutado").prop('href', href_egreso_ejecutado);
-
-        var href_categoria_tablero_categoria = base_path + "/categorias/" + comercial + "/tablero_categoria";
-        $("#categoria_tablero_categoria").prop('href', href_categoria_tablero_categoria);
-        var href_categoria_tablero = base_path + "/categorias/" + comercial + "/tablero";
-        $("#categoria_tablero").prop('href', href_categoria_tablero);
-    }
-
-    function handleOnClick() {
-        var base_path = '{{ url('/') }}';
-
-        if ($("#switch").prop('checked')) {
-            var comercial = 1;
-            var htmlSwitch = "<h4>Cuenta Comercial</h4>";
-            localStorage.setItem("htmlswitch", "checked");
-            $('#label_switch').html(htmlSwitch);
-        } else {
-            var comercial = 0;
-            var htmlSwitch = "<h4>Cuenta Personal</h4>";
-            localStorage.setItem("htmlswitch", "unchecked");
-            $('#label_switch').html(htmlSwitch);
-        }
-
-        var href_ingreso_programado = base_path + "/categorias/1/" + comercial + "/0/index";
-        $("#ingreso_programado").prop('href', href_ingreso_programado);
-        var href_ingreso_ejecutado = base_path + "/categorias/2/" + comercial + "/0/index";
-        $("#ingreso_ejecutado").prop('href', href_ingreso_ejecutado);
-        var href_egreso_programado = base_path + "/categorias/3/" + comercial + "/0/index";
-        $("#egreso_programado").prop('href', href_egreso_programado);
-        var href_egreso_ejecutado = base_path + "/categorias/4/" + comercial + "/0/index";
-        $("#egreso_ejecutado").prop('href', href_egreso_ejecutado);
-
-        var href_categoria_tablero_categoria = base_path + "/categorias/" + comercial + "/tablero_categoria";
-        $("#categoria_tablero_categoria").prop('href', href_categoria_tablero_categoria);
-        var href_categoria_tablero = base_path + "/categorias/" + comercial + "/tablero";
-        $("#categoria_tablero").prop('href', href_categoria_tablero);
-    }
-</script>
+@include('layouts.navbars.scripts')
 
 <div class="sidebar" data-color="orange" data-background-color="white"
     data-image="{{ asset('material') }}/img/sidebar-1.jpg">
@@ -270,8 +143,16 @@
                 </div>
             </li>
 
+            {{-- Brujula Financiera --}}
+            <li class="nav-item{{ $activePage == 'brujula' ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('brujula.index') }}">
+                    <i class="material-icons">explore</i>
+                    <p>{{ __('Brujula Financiera') }}</p>
+                </a>
+            </li>
+
             {{-- Categorias --}}
-            <li
+             <li
                 class="nav-item {{ $activePage == 'categorias' || $activePage == 'user-management' ? ' active' : '' }}">
                 <a class="nav-link" data-toggle="collapse" href="#categorias" aria-expanded="true">
                     <i class="material-icons">category</i>

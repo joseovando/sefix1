@@ -29,7 +29,7 @@ class CuentaController extends Controller
         $mes_actual_text = date("F Y", $date_future);
 
         $mes = mes_actual($fecha_actual);
-        $navegador_mobile = navegador_mobile();
+        
         $titulo = titulo_cuenta($id);
 
         $vistaCuentas = DB::table('vista_cuentas')
@@ -83,6 +83,7 @@ class CuentaController extends Controller
         }
 
         include('IncludePresupuestoProgramado/IfLlaveFormInclude.php');
+        include('IncludeReporte/ComercialSwitchInclude.php');
 
         $date_future = strtotime('-0 day', strtotime($fecha_actual));
         $mes_actual_text = date("F Y", $date_future);
@@ -96,7 +97,7 @@ class CuentaController extends Controller
             $total_egreso_programado_bar,
             $saldo_ejecutado_bar,
             $saldo_programado_bar
-        ) = total_ingresos_egresos_saldo_mes($fecha_actual);
+        ) = total_ingresos_egresos_saldo_mes($fecha_actual, $comercial);
 
         $cuentaTipos = DB::table('cuenta_tipo')
             ->where('estado', '=', 1)
@@ -132,7 +133,7 @@ class CuentaController extends Controller
             $total_egreso_programado,
             $saldo_ejecutado_bar,
             $saldo_programado_bar
-        ) = total_ingresos_egresos_saldo_mes($fecha_actual);
+        ) = total_ingresos_egresos_saldo_mes($fecha_actual, $comercial);
 
         $total_ingreso_plus = $total_ingreso + $total_tipo[1];
         $total_egreso_plus = $total_egreso + $total_tipo[2];

@@ -1,7 +1,8 @@
 @extends('layouts.app', ['activePage' => 'categorias', 'titlePage' => __('Categorias')])
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/autoComplete.min.css') }}">
+    <script src="{{ asset('js/jquery.min.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/bootstrap-select.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/autoComplete.min.css') }}">
 
     <style>
         .scroll {
@@ -114,6 +115,7 @@
                                     'ano' => $ano_actual,
                                     'mes' => $mes_actual,
                                     'estado' => $estado,
+                                    'comercial' => $comercial,
                                 ]) }}"
                                     class="btn {{ $vistaCategoriaFavorita->fondo }} btn-lg btn-block" role="button">
                                     <i class="{{ $vistaCategoriaFavorita->icono }}"></i><br><br>
@@ -129,6 +131,7 @@
                                     'menu' => $menu,
                                     'date' => $fecha_actual,
                                     'estado' => $estado,
+                                    'comercial' => $comercial,
                                 ]) }}"
                                     class="btn {{ $vistaCategoriaFavorita->fondo }} btn-lg btn-block" role="button">
                                     <i class="{{ $vistaCategoriaFavorita->icono }}"></i><br><br>
@@ -145,6 +148,7 @@
                                     'ano' => $ano_actual,
                                     'mes' => $mes_actual,
                                     'estado' => $estado,
+                                    'comercial' => $comercial,
                                 ]) }}"
                                     class="btn {{ $vistaCategoriaFavorita->fondo }} btn-lg btn-block" role="button">
                                     <i class="{{ $vistaCategoriaFavorita->icono }}"></i><br><br>
@@ -160,6 +164,7 @@
                                     'menu' => $menu,
                                     'date' => $fecha_actual,
                                     'estado' => $estado,
+                                    'comercial' => $comercial,
                                 ]) }}"
                                     class="btn {{ $vistaCategoriaFavorita->fondo }} btn-lg btn-block" role="button">
                                     <i class="{{ $vistaCategoriaFavorita->icono }}"></i><br><br>
@@ -225,99 +230,7 @@
             <!-- Modal Categorias Favoritas Save -->
 
             <!-- Modal Create Categorias -->
-            <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Crear Categoria</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <div class="alert alert-success alert-block" style="display: none;">
-                                <button type="button" class="close" data-dismiss="alert">×</button>
-                                <strong class="success-msg"></strong>
-                            </div>
-                        </div>
-                        <form>
-                            @csrf
-                            <div class="modal-body margin">
-
-                                <div class="row">
-
-                                    <div class="col-sm">
-                                        <div class="form-group">
-                                            <select class="form-control" id="tipo_categoria" name="tipo_categoria"
-                                                required>
-                                                <option value="">Seleccione Tipo de Categoria</option>
-                                                @foreach ($categoriaTipos as $categoriaTipo)
-                                                    <option value="{{ $categoriaTipo->id }}">
-                                                        {{ $categoriaTipo->tipo_categoria }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm">
-                                        <div class="form-group{{ $errors->has('categoria') ? ' has-danger' : '' }}">
-                                            <input
-                                                class="form-control{{ $errors->has('categoria') ? ' is-invalid' : '' }}"
-                                                name="categoria" id="categoria" type="text"
-                                                placeholder="{{ __('Categoria') }}"
-                                                value="{{ old('categoria', auth()->user()->categoria) }}" required />
-                                            @if ($errors->has('categoria'))
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
-                                    <div class="col-sm">
-                                        <div class="form-group">
-                                            <select class="form-control selectpicker" id="logo_categoria"
-                                                name="logo_categoria" required>
-                                                <option value="">Seleccione Logo</option>
-                                                @foreach ($categoriaLogos as $categoriaLogo)
-                                                    <option
-                                                        value="{{ $categoriaLogo->icono }} {{ $categoriaLogo->tamano }}"
-                                                        data-icon="{{ $categoriaLogo->icono }}">
-                                                        - {{ $categoriaLogo->label }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm">
-                                        <div class="form-group">
-                                            <select class="form-control selectpicker" id="fondo_categoria"
-                                                name="fondo_categoria" required>
-                                                <option value="">Seleccione Fondo Categoria</option>
-                                                <option value="bg-secondary" class="bg-secondary">Plomo</option>
-                                                <option value="bg-primary" class="bg-primary">Azul</option>
-                                                <option value="bg-danger" class="bg-danger">Rojo</option>
-                                                <option value="bg-warning" class="bg-warning">Amarillo</option>
-                                                <option value="bg-info" class="bg-info">Celeste</option>
-                                                <option value="bg-dark" class="bg-dark" style="color: #fff">Negro
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary btn-submit"
-                                    id="GuardarCategoria">Guardar</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @include('categorias.modal_categoria')
             <!-- Modal Create Categorias -->
 
         </div>
@@ -353,13 +266,15 @@
                     var mes = @json($mes_actual);
                     var ano = @json($ano_actual);
                     var estado = @json($estado);
+                    var comercial = @json($comercial);
                     var date = @json($fecha_actual);
 
                     for (var i = 0; i < data.vistaCategoriaFavoritas.length; ++i) {
 
                         rutaProgramada = '<div class="col-md-3"><a href="presupuestosprogramados/' +
                             data.vistaCategoriaFavoritas[i].id +
-                            '/' + menu + '/' + mes + '/' + ano + '/' + estado + '/create" class="btn ' +
+                            '/' + menu + '/' + mes + '/' + ano + '/' + estado + '/' + comercial +
+                            '/create" class="btn ' +
                             data.vistaCategoriaFavoritas[i].fondo +
                             ' btn-lg btn-block" role="button"><i class="' +
                             data.vistaCategoriaFavoritas[i].icono +
@@ -369,7 +284,7 @@
 
                         rutaEjecutada = '<div class="col-md-3"><a href="presupuestosejecutados/' +
                             data.vistaCategoriaFavoritas[i].id +
-                            '/' + menu + '/' + date + '/' + estado + '/create" class="btn ' +
+                            '/' + menu + '/' + date + '/' + estado + '/' + comercial + '/create" class="btn ' +
                             data.vistaCategoriaFavoritas[i].fondo +
                             ' btn-lg btn-block" role="button"><i class="' +
                             data.vistaCategoriaFavoritas[i].icono +

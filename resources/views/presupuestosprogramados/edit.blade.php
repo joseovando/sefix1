@@ -155,7 +155,7 @@
                                                                 <div class="col-sm">
                                                                     <div class="form-group">
                                                                         <input id="inicio_{{ $vistaCategoria->id }}"
-                                                                            width="110"
+                                                                            width="80"
                                                                             name="inicio_{{ $vistaCategoria->id }}"
                                                                             @if (isset($fecha_inicio[$vistaCategoria->id])) value="{{ $fecha_inicio[$vistaCategoria->id] }}" @endif />
                                                                         <script>
@@ -175,7 +175,7 @@
                                                                     id="div_{{ $vistaCategoria->id }}" style="initial">
                                                                     <div class="form-group">
                                                                         <input id="fin_{{ $vistaCategoria->id }}"
-                                                                            width="110"
+                                                                            width="80"
                                                                             name="fin_{{ $vistaCategoria->id }}"
                                                                             @if (isset($fecha_fin[$vistaCategoria->id])) value="{{ $fecha_fin[$vistaCategoria->id] }}" @endif />
                                                                         <script>
